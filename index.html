@@ -171,6 +171,70 @@
   #cast .card{ width: 260px; } /* 列幅を固定して整える（可変が良ければ削除OK） */
 }
 /* スマホは従来通りでOK（1列フル幅のまま） */
+      /* ==== Hero を左右2カラム＋下段プロフィールに再レイアウト ==== */
+.hero-showcase{
+  display:grid;
+  grid-template-columns: minmax(280px,1.1fr) minmax(240px,1fr);
+  grid-template-areas:
+    "quote img"
+    "meta  img";
+  align-items:center;
+  gap:28px 40px;
+  min-height:clamp(520px, 80svh, 860px);
+}
+
+/* 左上：名言 */
+.quote-area{ grid-area:quote; align-self:end; }
+#quote-text{
+  font-size:clamp(28px,5.8vw,64px);
+  line-height:1.18;
+  letter-spacing:.08em;
+  font-weight:800;
+  text-shadow:0 0 14px rgba(229,9,20,.45);
+}
+
+/* 右列：画像（DOMはそのまま。子要素をグリッドに流し込む） */
+.char-info{ display:contents; }        /* 画像とメタを親から“解放” */
+.char-img{
+  grid-area:img;
+  justify-self:center;
+  width:min(64vw, 640px);
+  max-height:min(78svh, 760px);
+  object-fit:cover;
+  border:none;               /* 枠線OFF */
+  box-shadow:0 18px 60px rgba(0,0,0,.55);
+  border-radius:16px;
+}
+
+/* 左下：名前・CV・説明 */
+.char-meta{ grid-area:meta; align-self:start; max-width:58ch; }
+.char-name{ font-size:clamp(20px,2.6vw,30px); margin:4px 0 4px; font-weight:900; }
+.char-cv{ margin:0 0 10px; font-size:14px; color:var(--ink); letter-spacing:.06em; }
+.char-desc{ font-size:15px; line-height:1.8; color:#ddd; }
+
+/* 余白微調整 */
+.site-header__inner.wrap{ padding-top:60px; padding-bottom:40px; }
+
+/* ===== スマホでも“左テキスト／右画像”を維持 ===== */
+@media (max-width: 768px){
+  .hero-showcase{
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "quote img"
+      "meta  img";
+    gap:12px 12px;
+    min-height:72svh;
+  }
+  #quote-text{ font-size:clamp(18px,6.4vw,28px); line-height:1.24; }
+  .char-img{
+    width:46vw;
+    max-height:58svh;
+    border-radius:14px;
+    box-shadow:0 12px 36px rgba(0,0,0,.5);
+  }
+  .char-meta{ max-width:unset; }
+}
+
   </style>
 </head>
 <body>
