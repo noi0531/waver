@@ -234,6 +234,44 @@
   }
   .char-meta{ max-width:unset; }
 }
+/* ===== Mobile nav fix (<=768px) ===== */
+@media (max-width: 768px){
+  .gnav{backdrop-filter:saturate(140%) blur(8px);}
+
+  .gmenu{
+    justify-content:flex-start;   /* 左から並べる */
+    gap:10px;
+    padding:10px 12px;
+    flex-wrap:nowrap;             /* 折り返さない＝1行 */
+    overflow-x:auto;              /* 横スクロール */
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .gmenu::-webkit-scrollbar{display:none;}
+
+  .gmenu a{
+    font-size:13px;               /* ちょい小さく */
+    letter-spacing:.08em;         /* 詰める */
+    padding:8px 10px;             /* ピル間隔をコンパクトに */
+    white-space:nowrap;           /* 1項目を折り返さない */
+    background:rgba(255,255,255,.06); /* 常時うっすら背景でタブ感 */
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .gmenu a:hover,.gmenu a:focus{
+    background:rgba(255,255,255,.12);
+  }
+
+  /* 「WAVER 3」ロゴタブの扱い：左端固定（任意） */
+  .gmenu .brand{
+    margin-right:0;               /* 自動で広がるのを止める */
+    position:sticky; left:0;      /* 左端にピタッ */
+    z-index:1;
+    background:rgba(255,255,255,.10);
+  }
+
+  /* 固定ヘッダー分のアンカーずれ防止（任意） */
+  html{ scroll-padding-top:56px; }
+}
 
   </style>
 </head>
