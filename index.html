@@ -1,395 +1,827 @@
+<!--
+Beauty LP Revamp v2
+- 1ファイル / GitHub Pages 直置きOK
+- Tailwind CDN + Alpine.js
+- 見積カート & 購入カート（複数見積セット対応 / ローカル保存）
+- 画像や文言は <script id="data"> のJSONのみ編集
+-->
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" x-data="app()" x-init="init()">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NOIGRIT 署名マニュアル｜PDFに署名する全部入りガイド</title>
-  <meta name="description" content="NOIGRIT向け 署名マニュアル。スマホ（iPhone/Android）・PC（Mac/Windows）・印刷手書きの3カテゴリで超詳細に解説。標準機能のみ。スマホ最適化・軽量表示。"/>
+  <title x-text="data.meta.title">美容機器LP</title>
+  <meta name="description" :content="data.meta.description">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
-    :root{ --bg:#0b1220; --panel:#0f172a; --ink:#e5e7eb; --muted:#94a3b8; --line:#1f2937; --accent:#38bdf8; --accent2:#22c55e; --ng-y1:#fde047; --ng-y2:#f59e0b; --ng-stroke:#eab308; --danger:#ef4444; }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; padding:0; }
-    body{ font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif; color:var(--ink); background:#0b1220; }
-
-    header{ padding:calc(18px + env(safe-area-inset-top)) 16px 14px; background:var(--panel); border-bottom:1px solid var(--line); position:relative; z-index:1; }
-    .hero{ max-width:1100px; margin:0 auto; text-align:center; }
-    .brand{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
-    .logo-badge{ display:inline-flex; align-items:center; justify-content:center; padding:.5em 1.2em; border-radius:14px; background:linear-gradient(135deg, var(--ng-y1), var(--ng-y2)); color:#1f2937; font-weight:900; font-size:24px; letter-spacing:.1em; border:1px solid var(--ng-stroke); text-transform:uppercase; }
-    .brand h1{ margin:0; font-size:26px; font-weight:700; }
-    .hero p{ margin:10px 0 0; color:var(--muted); font-size:15px; }
-
-    .tabs{ max-width:1100px; margin:12px auto 0; padding:10px; display:flex; gap:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; border-top:1px solid rgba(255,255,255,.04); }
-    .tabs::-webkit-scrollbar{ display:none; }
-    .tab{ appearance:none; border:none; cursor:pointer; padding:14px 18px; border-radius:999px; background:#0f2036; color:var(--ink); border:1px solid #253449; font-weight:800; flex:0 0 auto; white-space:nowrap; font-size:15px; }
-    .tab[aria-selected="true"]{ outline:2px solid #38bdf866; background:#142742; }
-
-    main{ max-width:1100px; margin:16px auto 80px; padding:0 16px; }
-    .panel{ display:none; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; margin:16px 0; }
-    .panel[aria-hidden="false"]{ display:block; }
-    .panel h2{ margin:0 0 10px; color:var(--accent); font-size:20px; }
-    .panel .sub{ margin:0 0 12px; color:var(--muted); font-size:14px; }
-
-    .notice{ border:1px solid #3b3b28; background:#171710; border-radius:12px; padding:16px; margin-top:16px; }
-    .notice h3{ margin:0 0 12px; color:#fde047; font-size:16px; }
-    .notice ul{ margin:0; padding-left:20px; }
-    .notice li{ margin:6px 0; line-height:1.6; color:#e5e7eb; }
-    .notice b, .notice strong{ color: var(--danger); font-weight:800; }
-
-    .subsel{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; justify-content:center; }
-    .chip{ appearance:none; border:1px solid #2b3a50; background:#0e1d30; color:var(--ink); border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; font-size:14px; }
-    .chip[aria-pressed="true"]{ outline:2px solid var(--accent2); background:#12324f; }
-
-    .steps{ counter-reset:step; display:grid; gap:12px; }
-    .step{ border:1px solid #2a3b55; border-radius:10px; padding:12px; margin:14px 0; background:#0d1a2b; }
-    .step-title{ font-weight:800; margin-bottom:8px; font-size:15px; }
-    .step-title::before{ counter-increment:step; content:"STEP" counter(step) " "; font-weight:900; margin-right:4px; }
-    .step-body{ background:#071425; border:1px solid #11294a; border-radius:8px; padding:10px; font-size:14px; }
-    .arrow{ text-align:center; margin:6px 0; font-size:20px; color:#94a3b8; }
-
-    .sendbox{ border:1px solid #35507a; background:#0b203a; border-radius:12px; padding:12px; margin-top:20px; }
-    .sendbox h4{ margin:0 0 6px; font-size:14px; color:#8ec1ff; }
-    .sendbox code{ display:block; background:#071425; border:1px solid #11294a; padding:10px; border-radius:8px; font-family:ui-monospace, monospace; white-space:pre-wrap; color:#dbeafe; }
-
-    @media (max-width:720px){
-      .brand h1{ font-size:22px; }
-      .logo-badge{ font-size:20px; }
-      .panel{ padding:18px; }
-      .step-body{ font-size:13.5px; }
+    :root{
+      /* シックで高級感のある新配色（要望に合わせて微調整可） */
+      --bg:#0a0a0f;         /* 背景をより深いネイビー寄りブラック */
+      --panel:#111827;      /* カード背景をやや明るく */
+      --ink:#e7e7ee;        /* テキストは青み薄グレー */
+      --muted:#9aa1b2;      /* 補助文字 */
+      --line:#1f2937;       /* 罫線 */
+      --accent:#a78bfa;     /* メイン：上品なバイオレット */
+      --accent2:#34d399;    /* サブ：落ち着いたエメラルド */
     }
+    html,body{background:var(--bg); color:var(--ink)}
+    .glass{backdrop-filter:saturate(140%) blur(10px); background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.08)}
+    .shine{position:relative;overflow:hidden}
+    .shine::after{content:""; position:absolute; inset:-200% -50%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); transform:skewX(-20deg); animation:shine 6s linear infinite}
+    @keyframes shine{0%{transform:translateX(-60%) skewX(-20deg)}100%{transform:translateX(120%) skewX(-20deg)}}
+    .hero-grad{background:radial-gradient(1200px 600px at 10% -10%, rgba(167,139,250,.18), transparent 60%),radial-gradient(900px 500px at 90% 10%, rgba(52,211,153,.12), transparent 60%)}
+    .divider{height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
+    .tag{border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06)}
+    .btn{--tw-shadow:0 10px 20px -10px rgba(167,139,250,.55); box-shadow:var(--tw-shadow)}
+    .blur-bottom{backdrop-filter:blur(8px)}
+    .badge{min-width:1.5rem}
+/* ===== Scroll/Reveal & Micro-interactions ===== */
+:root { --ease: cubic-bezier(.2,.7,.2,1); }
 
-    .footer{ margin:32px auto 60px; max-width:1100px; color:#94a3b8; font-size:12.5px; padding:0 16px; text-align:center; }
+/* スクロール進捗バー */
+.progress{position:fixed;top:0;left:0;height:3px;width:calc(var(--scroll,0)*1%);background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:60}
 
-    /* ===== モーダル・ギャラリー ===== */
-    .img-toggle{ color:#38bdf8; cursor:pointer; text-decoration:underline; }
-    .modal{ display:none; position:fixed; z-index:9999; inset:0; background:rgba(0,0,0,.85); }
-    .modal-inner{ position:absolute; inset:0; display:grid; grid-template-rows:auto 1fr auto; }
-    .modal-header{ display:flex; justify-content:flex-end; padding:10px 14px; }
-    .modal-close{ font-size:30px; color:#fff; cursor:pointer; line-height:1; }
-    .modal-body{ display:grid; place-items:center; padding:8px; }
-    .modal-body img{ max-width:92vw; max-height:76vh; border-radius:10px; }
-    .modal-footer{ display:flex; align-items:center; justify-content:center; gap:12px; padding:10px; }
-    .nav-btn{ border:1px solid #93c5fd; background:#1e293b; color:#e5e7eb; padding:8px 12px; border-radius:999px; cursor:pointer; font-weight:700; }
-    .counter{ color:#cbd5e1; font-size:13px; }
-    .thumbs{ display:flex; gap:6px; overflow-x:auto; padding:6px 10px; }
-    .thumbs img{ height:56px; border-radius:6px; opacity:.7; border:2px solid transparent; cursor:pointer; }
-    .thumbs img.active{ opacity:1; border-color:#38bdf8; }
+/* フェードアップ（遅延は --d で指定） */
+.reveal{opacity:0;transform:translateY(14px) scale(.98)}
+.reveal.is-visible{opacity:1;transform:none;transition:transform .8s var(--ease),opacity .8s var(--ease);transition-delay:var(--d,0ms)}
+
+/* カードのホバー */
+.card-hover{transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.card-hover:hover{transform:translateY(-6px);box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+.img-zoom{transition:transform 1.2s var(--ease)}
+.card-hover:hover .img-zoom{transform:scale(1.03)}
+
+/* ボタンのホバー */
+.btn{transition:transform .2s var(--ease),box-shadow .3s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+
+html{scroll-behavior:smooth}
+
+/* 低モーション設定の人向けにアニメ弱め */
+@media (prefers-reduced-motion: reduce){
+  .reveal,.reveal.is-visible,.card-hover,.img-zoom,.btn{transition:none!important}
+}
+       /* === ここから追記 ========================= */
+    .tag-on-img{
+      background: rgba(0,0,0,.55);
+      border-color: rgba(255,255,255,.2);
+      color:#fff;
+      backdrop-filter: saturate(120%) blur(2px);
+      -webkit-backdrop-filter: saturate(120%) blur(2px);
+      text-shadow: 0 1px 1px rgba(0,0,0,.6);
+    }
+    .media-scrim::before{
+      content:""; position:absolute; inset:0;
+      background: radial-gradient(220px 120px at 1rem 1rem, rgba(0,0,0,.42), transparent 65%);
+      pointer-events:none; border-radius: inherit;
+    }
+    /* ========================================= */
   </style>
 </head>
-<body>
-  <header>
-    <div class="hero">
-      <div class="brand">
-        <span class="logo-badge">NOIGRIT</span>
-        <h1>署名マニュアル</h1>
+<body class="antialiased selection:bg-purple-500/30 selection:text-white">
+  <div class="progress"></div>
+  <!-- 以降そのまま -->
+  <!-- ===== Sticky Header ===== -->
+  <header class="fixed top-0 inset-x-0 z-40">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="mt-4 mb-3 glass rounded-2xl px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img :src="data.brand.logo" alt="logo" class="w-9 h-9 rounded-xl object-cover"/>
+          <span class="text-sm text-gray-300" x-text="data.brand.tagline"></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+          <a href="#products" class="hover:text-white">製品</a>
+          <a href="#value" class="hover:text-white">選ばれる理由</a>
+          <a href="#compare" class="hover:text-white">比較</a>
+          <a href="#ba" class="hover:text-white">Before/After</a>
+          <a href="#faq" class="hover:text-white">FAQ</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button @click="openQuoteDrawer()" class="relative tag px-3 py-2 rounded-xl text-sm hover:bg-white/10">
+            見積カート
+            <span class="absolute -right-2 -top-2 bg-purple-500 text-white text-xs rounded-full px-1.5 badge" x-text="quoteCount()"></span>
+          </button>
+          <button @click="openBuyDrawer()" class="relative tag px-3 py-2 rounded-xl text-sm hover:bg-white/10">
+            購入カート
+            <span class="absolute -right-2 -top-2 bg-emerald-500 text-black text-xs rounded-full px-1.5 badge" x-text="buyCount()"></span>
+          </button>
+          <a :href="data.cta.line" class="hidden sm:inline-flex tag px-3 py-2 rounded-xl text-sm hover:bg-white/10">LINEで相談</a>
+          <button @click="openLead('quote')" class="btn inline-flex items-center gap-2 bg-[var(--accent)] hover:opacity-90 text-black font-medium px-4 py-2 rounded-xl">
+            見積もり
+          </button>
+        </div>
       </div>
-      <p>ご自身で署名に使う端末（PC/スマホ）に合わせて、下のカテゴリを選択してください。</p>
     </div>
   </header>
 
-  <div class="tabs" role="tablist" aria-label="NOIGRIT 署名カテゴリ">
-    <button class="tab" type="button" role="tab" aria-selected="true"  aria-controls="p-intro"  id="t-intro">使い方 / 注意事項</button>
-    <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p-phone" id="t-phone">スマホで署名する場合</button>
-    <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p-pc"    id="t-pc">PCで署名する場合</button>
-    <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p-print" id="t-print">その他（印刷/手書き）</button>
+  <!-- ===== Hero ===== -->
+<section class="pt-28 md:pt-36 pb-8 hero-grad">
+  <div class="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 tag px-3 py-2 rounded-xl text-xs text-gray-300 mb-4 reveal" data-reveal style="--d:40ms">
+        <span>サロン導入台数 <strong x-text="data.hero.stats.units"></strong> 台突破</span>
+        <span class="mx-1">•</span>
+        <span>平均回収 <strong x-text="data.hero.stats.roi"></strong> ヶ月</span>
+      </div>
+
+      <!-- ① 見出し -->
+<h1 class="text-4xl md:text-6xl font-extrabold leading-[1.08] tracking-tight mb-4 reveal" data-reveal style="--d:80ms">
+  <span class="block">美は、戦略だ。</span>
+  <span class="block text-[var(--accent)]">プロ機器を、現実的な価格で。</span>
+</h1>
+      <!-- ② リード文 -->
+      <p class="reveal text-gray-300/90 text-base md:text-lg leading-relaxed max-w-xl"
+         data-reveal style="--d:160ms"
+         x-text="data.hero.lead"></p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-3 reveal" data-reveal style="--d:240ms">
+        <button @click="openLead('quote')" class="btn bg-[var(--accent)] hover:opacity-90 text-black font-semibold px-5 py-3 rounded-2xl">無料見積もり</button>
+        <button @click="openLead('brochure')" class="tag px-5 py-3 rounded-2xl">資料請求</button>
+        <a :href="data.cta.tel" class="tag px-4 py-3 rounded-2xl">TEL: <span x-text="data.cta.telLabel"></span></a>
+      </div>
+
+      <div class="mt-6 flex items-center gap-4 text-xs text-gray-400 reveal" data-reveal style="--d:320ms">
+        <div class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-400 rounded-full"></span>最短1週間納品</div>
+        <div class="flex items-center gap-2"><span class="w-2 h-2 bg-[var(--accent)] rounded-full"></span>3年保証</div>
+        <div class="flex items-center gap-2"><span class="w-2 h-2 bg-violet-300 rounded-full"></span>SNS集客講習</div>
+      </div>
+    </div>
+
+    <!-- ③ 右側ビジュアル -->
+    <div class="relative reveal" data-reveal style="--d:200ms">
+      <div class="aspect-[4/3] rounded-3xl overflow-hidden glass border border-white/10 shine">
+        <img :src="data.hero.image" alt="hero" class="w-full h-full object-cover"/>
+      </div>
+      <div class="absolute -bottom-6 right-4 glass rounded-2xl px-4 py-3 flex items-center gap-3 reveal" data-reveal style="--d:360ms">
+        <div class="text-sm">
+          <div class="text-gray-300">月額コスト目安</div>
+          <div class="text-xl font-bold" x-text="`約¥${data.hero.monthly.toLocaleString()}~`"></div>
+        </div>
+        <div class="text-2xl">💡</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- ===== Products ===== -->
+<section id="products" class="py-16">
+  <div class="mx-auto max-w-7xl px-4">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+<h2 class="text-3xl md:text-4xl font-extrabold reveal" data-reveal>製品ラインナップ</h2>
+        <p class="text-gray-400 mt-2">必要なカテゴリから最短導入。</p>
+      </div>
+    </div>
+
+    <!-- タブ：機器 / 専売品 -->
+<div class="glass rounded-2xl p-2 inline-flex gap-2 mb-6">
+  <button
+    @click="productTab='機器'; $nextTick(()=>observeReveals())"
+    class="px-4 py-2 rounded-xl text-sm"
+    :class="{'bg-white/15': productTab==='機器'}"
+  >機器</button>
+
+  <button
+    @click="productTab='専売品'; $nextTick(()=>observeReveals())"
+    class="px-4 py-2 rounded-xl text-sm"
+    :class="{'bg-white/15': productTab==='専売品'}"
+  >専売品</button>
+</div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+     <template x-for="(p,i) in filteredProducts()" :key="p.sku">
+  <article class="glass rounded-3xl overflow-hidden flex flex-col card-hover reveal"
+           data-reveal :style="`--d:${i*80}ms`">
+<div class="relative media-scrim">
+      <img :src="p.image" :alt="p.name" class="w-full aspect-[4/3] object-cover img-zoom"/>
+            <div class="absolute left-4 top-4 flex gap-2">
+<span class="tag tag-on-img text-xs px-2 py-1 rounded-lg" x-text="p.badge"></span>
+ <span class="tag tag-on-img text-xs px-2 py-1 rounded-lg" x-show="p.stock === '即納'">即納</span>
+            </div>
+          </div>
+          <div class="p-5 flex-1 flex flex-col gap-3">
+            <h3 class="text-xl font-bold" x-text="p.name"></h3>
+            <p class="text-sm text-gray-300/90" x-text="p.copy"></p>
+
+            <div class="mt-auto">
+              <template x-if="p.price">
+                <div>
+                  <div class="text-2xl font-extrabold" x-text="`¥${p.price.toLocaleString()}（税込）`"></div>
+                  <div class="text-xs text-gray-400 mt-1" x-text="p.priceNote"></div>
+                </div>
+              </template>
+              <template x-if="!p.price">
+                <div class="text-sm text-gray-300 font-medium" x-text="p.priceMessage"></div>
+              </template>
+            </div>
+
+            <ul class="grid grid-cols-2 gap-2 text-xs text-gray-300" x-show="p.highlights && p.highlights.length">
+              <template x-for="f in p.highlights" :key="f"><li class="tag rounded-lg px-2 py-1">✓ <span x-text="f"></span></li></template>
+            </ul>
+
+            <div class="flex flex-wrap gap-2 mt-3">
+              <button class="btn bg-[var(--accent)] hover:opacity-90 text-black font-semibold px-4 py-2 rounded-xl" @click="addQuote(p)">見積カート</button>
+              <button class="tag px-4 py-2 rounded-xl hover:bg-white/10" x-show="productTab==='機器'" @click="addBuy(p)">購入カート</button>
+              <button class="tag px-4 py-2 rounded-xl" @click="toggle(p)">詳細</button>
+            </div>
+          </div>
+
+          <div x-show="p.open" x-transition class="px-5 pb-6">
+            <div class="divider my-4"></div>
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              <template x-for="spec in p.specs" :key="spec.k">
+                <div class="flex justify-between gap-4"><dt class="text-gray-400" x-text="spec.k"></dt><dd class="font-medium text-right" x-text="spec.v"></dd></div>
+              </template>
+            </dl>
+          </div>
+        </article>
+      </template>
+    </div>
+  </div>
+</section>
+
+  <!-- ===== Value / Compare / BA / FAQ (同じ) ===== -->
+  <section id="value" class="py-16">
+    <div class="mx-auto max-w-7xl px-4 grid md:grid-cols-3 gap-6">
+      <div class="md:col-span-1 flex flex-col justify-center">
+<h2 class="text-3xl md:text-4xl font-extrabold reveal" data-reveal>選ばれる理由</h2>
+        <p class="text-gray-400 mt-3">高コスパの裏側を、すべて開示。仕組みで勝つから、価格でも勝てる。</p>
+      </div>
+      <div class="md:col-span-2 grid sm:grid-cols-2 gap-4">
+        <template x-for="v in data.value" :key="v.title">
+          <div class="glass rounded-3xl p-6">
+            <h3 class="font-bold text-lg mb-1" x-text="v.title"></h3>
+            <p class="text-gray-300" x-text="v.desc"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare" class="py-16">
+    <div class="mx-auto max-w-7xl px-4">
+<h2 class="text-3xl md:text-4xl font-extrabold mb-6 reveal" data-reveal>他社との比較</h2>
+      <div class="overflow-x-auto glass rounded-3xl">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-300/90">
+              <th class="p-4">製品名</th>
+              <th class="p-4">価格</th>
+              <th class="p-4">機能</th>
+              <th class="p-4">保証</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="row in data.compare" :key="row.name">
+              <tr class="border-t border-white/10">
+                <td class="p-4 font-medium" x-text="row.name"></td>
+                <td class="p-4" x-text="row.price"></td>
+                <td class="p-4" x-text="row.func"></td>
+                <td class="p-4" x-text="row.warranty"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="ba" class="py-16">
+    <div class="mx-auto max-w-7xl px-4">
+<h2 class="text-3xl md:text-4xl font-extrabold mb-6 reveal" data-reveal>Before / After</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <template x-for="item in data.beforeAfter" :key="item.before">
+          <div class="glass rounded-3xl p-5">
+            <div class="relative aspect-[16/9] overflow-hidden rounded-2xl">
+              <img :src="item.before" alt="before" class="absolute inset-0 w-full h-full object-cover opacity-100"/>
+              <img :src="item.after" alt="after" class="absolute inset-0 w-full h-full object-cover clip" :style="`clip-path: inset(0 ${100-progress}% 0 0);`"/>
+              <input type="range" x-model="progress" min="0" max="100" class="absolute bottom-3 left-1/2 -translate-x-1/2 w-3/4">
+            </div>
+            <div class="flex justify-between text-sm text-gray-300 mt-3"><span>Before</span><span>After</span></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="py-16">
+    <div class="mx-auto max-w-7xl px-4">
+<h2 class="text-3xl md:text-4xl font-extrabold mb-6 reveal" data-reveal>よくある質問</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <template x-for="q in data.faq" :key="q.q">
+          <details class="glass rounded-2xl p-5 group">
+            <summary class="cursor-pointer list-none flex items-center justify-between text-lg font-bold">
+              <span x-text="q.q"></span>
+              <span class="text-[var(--accent)] group-open:rotate-45 transition">＋</span>
+            </summary>
+            <p class="text-gray-300 mt-3" x-text="q.a"></p>
+          </details>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Bottom CTA ===== -->
+  <div class="fixed bottom-4 inset-x-0 z-40">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="blur-bottom glass rounded-2xl p-3 flex items-center justify-between">
+        <div class="text-sm md:text-base"><strong>無料見積もり</strong>または<strong>資料請求</strong>は2分で完了。</div>
+        <div class="flex gap-2">
+          <button @click="openLead('quote')" class="btn bg-[var(--accent)] hover:opacity-90 text-black font-semibold px-4 py-2 rounded-xl">見積もり</button>
+          <button @click="openLead('brochure')" class="tag px-4 py-2 rounded-xl">資料請求</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <main>
-    <!-- INTRO -->
-    <section class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro" aria-hidden="false">
-      <h2>NOIGRIT署名マニュアルの使い方</h2>
-      <p class="sub">スマホ / PC / 印刷からお選びください。各ページの最後に送付方法があります。</p>
-      <div class="notice">
-        <h3>注意事項</h3>
-        <ul>
-          <li>ご記入いただくのは「<b>配信申込書兼承諾書</b>」のみです。</li>
-          <li>送付は「配信申込書兼承諾書」だけでなく <b>署名ページを含む全ページ</b> を添付してください。</li>
-          <li><b>誤字・脱字がないか</b> をご確認ください。</li>
-          <li><b>期日を過ぎると契約できない場合</b> があります。必ず期限内にご対応ください。</li>
-          <li><b>※未成年の場合は親権者兼法定代理人の箇所も記入してください。</b></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- PHONE -->
-    <section class="panel" id="p-phone" role="tabpanel" aria-labelledby="t-phone" aria-hidden="true">
-      <h2>スマホで署名する場合</h2>
-      <p class="sub">お使いの機種を選んでください。</p>
-      <div class="subsel" role="group" aria-label="スマホ機種選択">
-        <button class="chip" id="c-iphone"  aria-pressed="true"  type="button">iPhone</button>
-        <button class="chip" id="c-android" aria-pressed="false" type="button">Android</button>
-      </div>
-
-      <!-- iPhone -->
-      <div class="phone-iphone">
-        <div class="steps">
-          <div class="step">
-            <div class="step-title">PDFを開く</div>
-            <div class="step-body">
-              メールに添付されているファイルを開く→「マークアップ」
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/iphone_step1_1.png,screenshots/iphone_step1_2.png" data-alt="iPhone マークアップ手順">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">テキスト署名</div>
-            <div class="step-body">
-              二本の指でスライドし11ページ目へ→右下「＋」→「テキストを追加」→サイズ18ptで氏名/住所/メール/電話を入力
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/iphone_step2_1.png,screenshots/iphone_step2_2.png,screenshots/iphone_step2_3.png" data-alt="iPhone テキスト追加">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">保存/共有</div>
-            <div class="step-body">
-              右上「完了」→「ファイルを保存」→メールアプリを起動し添付後、下記「送付方法」を参考にメール送信
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/iphone_step3_1.png" data-alt="iPhone STEP3 保存と送付">(画像を参照)</span>
-            </div>
-          </div>
+  <!-- ===== Quote Drawer (複数見積) ===== -->
+  <aside x-show="ui.quoteOpen" x-transition class="fixed inset-y-0 right-0 w-full sm:w-[480px] z-50">
+    <div class="absolute inset-0 bg-black/60" @click="ui.quoteOpen=false"></div>
+    <div class="relative h-full glass w-full ml-auto p-4 sm:p-6 overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-2xl font-extrabold">見積カート</h3>
+        <div class="flex items-center gap-2">
+          <button class="tag px-3 py-2 rounded-xl" @click="addQuoteSet()">＋ 見積セット</button>
+          <button class="tag px-3 py-2 rounded-xl" @click="ui.quoteOpen=false">閉じる</button>
         </div>
       </div>
+      <div class="mt-3">
+        <label class="text-sm text-gray-300">アクティブな見積セット</label>
+        <select class="mt-1 w-full bg-white/10 border border-white/10 rounded-xl p-2" x-model.number="activeQuoteSet">
+          <template x-for="(s,i) in quoteSets" :key="s.id"><option :value="i" x-text="s.name"></option></template>
+        </select>
+      </div>
+      <template x-if="quoteSets.length">
+        <div class="mt-4">
+          <template x-for="(set,si) in quoteSets" :key="set.id">
+            <div class="mt-4" x-show="si===activeQuoteSet">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold" x-text="set.name"></h4>
+                <button class="text-sm text-red-300 hover:underline" @click="removeQuoteSet(si)">セット削除</button>
+              </div>
+              <div class="mt-2 space-y-3" x-show="set.items.length">
+                <template x-for="(item,idx) in set.items" :key="item.sku">
+                  <div class="flex items-center gap-3 p-3 rounded-2xl glass">
+                    <img :src="item.image" class="w-16 h-16 rounded-xl object-cover"/>
+                    <div class="flex-1">
+                      <div class="font-semibold" x-text="item.name"></div>
+                      <div class="text-sm text-gray-400" x-text="`¥${item.price.toLocaleString()}`"></div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <input type="number" class="w-16 bg-white/10 border border-white/10 rounded-lg p-1 text-center" min="1" x-model.number="item.qty">
+                      <button class="tag px-2 py-1 rounded-lg" @click="removeQuoteItem(si, idx)">削除</button>
+                    </div>
+                  </div>
+                </template>
+              </div>
+              <p class="text-sm text-gray-400 mt-4" x-show="!set.items.length">このセットには商品がありません。</p>
+              <div class="divider my-4"></div>
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-300">小計</div>
+                <div class="text-xl font-extrabold" x-text="`¥${quoteSubtotal(si).toLocaleString()}`"></div>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <button class="btn bg-[var(--accent)] text-black font-semibold px-4 py-3 rounded-xl" @click="sendQuote(si)">この見積を送信</button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+      <div class="divider my-6"></div>
+      <button class="w-full tag px-4 py-3 rounded-xl" @click="sendAllQuotes()" x-show="quoteSets.some(s=>s.items.length)">全見積をまとめて送信</button>
+    </div>
+  </aside>
 
-      <!-- Android（Acrobat想定） -->
-      <div class="phone-android" style="display:none;">
-        <div class="steps">
-          <div class="step">
-            <div class="step-title">PDFを開く（Acrobatで）</div>
-            <div class="step-body">
-              Googleドライブ→PDF右上「︙」→「アプリで開く」→「Adobe Acrobat」（未インストールなら導入）
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/android_step1_1.png,screenshots/android_step1_2.png,screenshots/android_step1_3.png" data-alt="Android STEP1 Acrobatで開く">(画像を参照)</span>
+  <!-- ===== Buy Drawer ===== -->
+  <aside x-show="ui.buyOpen" x-transition class="fixed inset-y-0 right-0 w-full sm:w-[480px] z-50">
+    <div class="absolute inset-0 bg-black/60" @click="ui.buyOpen=false"></div>
+    <div class="relative h-full glass w-full ml-auto p-4 sm:p-6 overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-2xl font-extrabold">購入カート</h3>
+        <button class="tag px-3 py-2 rounded-xl" @click="ui.buyOpen=false">閉じる</button>
+      </div>
+      <div class="mt-4 space-y-3" x-show="buyCart.length">
+        <template x-for="(item,idx) in buyCart" :key="item.sku">
+          <div class="flex items-center gap-3 p-3 rounded-2xl glass">
+            <img :src="item.image" class="w-16 h-16 rounded-xl object-cover"/>
+            <div class="flex-1">
+              <div class="font-semibold" x-text="item.name"></div>
+              <div class="text-sm text-gray-400" x-text="`¥${item.price.toLocaleString()}`"></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="number" class="w-16 bg-white/10 border border-white/10 rounded-lg p-1 text-center" min="1" x-model.number="item.qty">
+              <button class="tag px-2 py-1 rounded-lg" @click="removeBuyItem(idx)">削除</button>
             </div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">テキスト入力</div>
-            <div class="step-body">
-              下部「塗りつぶしと署名」→「テキストを追加（Aa）」→ 氏名/住所/メール/電話を入力→左上「←」で戻る
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/android_step2_1.png,screenshots/android_step2_2.png" data-alt="Android STEP2 テキスト入力">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">保存と送付</div>
-            <div class="step-body">
-              Acrobatの一覧に編集済みPDFが表示→「共有」からメールに添付し、下記「送付方法」に従って送信
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/android_step3_1.png" data-alt="Android STEP3 保存と送付">(画像を参照)</span>
-            </div>
-          </div>
+        </template>
+      </div>
+      <p class="text-sm text-gray-400 mt-4" x-show="!buyCart.length">カートに商品がありません。</p>
+      <div class="divider my-6"></div>
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-300">小計</div>
+        <div class="text-xl font-extrabold" x-text="`¥${buySubtotal().toLocaleString()}`"></div>
+      </div>
+      <button class="mt-4 btn bg-emerald-400 text-black font-semibold w-full px-4 py-3 rounded-xl" @click="checkout()">購入手続きへ</button>
+    </div>
+  </aside>
+
+  <!-- ===== Lead Modal (既存) ===== -->
+  <div x-show="modal.open" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70" @click="modal.open=false"></div>
+    <div class="relative w-full max-w-xl glass rounded-3xl p-6">
+      <h3 class="text-2xl font-extrabold mb-2" x-text="modal.title"></h3>
+      <p class="text-gray-300 mb-4" x-text="modal.desc"></p>
+      <form @submit.prevent="submitLead">
+        <div class="grid md:grid-cols-2 gap-4">
+          <label class="text-sm">サロン名<input type="text" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" x-model="form.salon" required></label>
+          <label class="text-sm">ご担当者名<input type="text" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" x-model="form.name" required></label>
+          <label class="text-sm md:col-span-2">メール<input type="email" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" x-model="form.email" required></label>
+          <label class="text-sm md:col-span-2">電話番号<input type="tel" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" x-model="form.tel"></label>
+          <label class="text-sm md:col-span-2" x-show="modal.type==='quote'">ご希望の機器<input type="text" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" x-model="form.product" placeholder="例：photomedicell"></label>
+          <label class="text-sm md:col-span-2">備考<textarea class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3" rows="4" x-model="form.note"></textarea></label>
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="text-xs text-gray-400">送信でプライバシーポリシーに同意したものとみなします。</div>
+          <button class="btn bg-[var(--accent)] hover:opacity-90 text-black font-semibold px-6 py-3 rounded-2xl">送信</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Checkout Modal ===== -->
+  <div x-show="ui.checkoutOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70" @click="ui.checkoutOpen=false"></div>
+    <div class="relative w-full max-w-xl glass rounded-3xl p-6">
+      <h3 class="text-2xl font-extrabold mb-4">購入手続き</h3>
+      <form @submit.prevent="submitOrder">
+        <div class="grid md:grid-cols-2 gap-4">
+          <label class="text-sm">ご担当者名<input required x-model="order.name" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3"/></label>
+          <label class="text-sm">メール<input required type="email" x-model="order.email" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3"/></label>
+          <label class="text-sm md:col-span-2">電話番号<input x-model="order.tel" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3"/></label>
+          <label class="text-sm md:col-span-2">配送先住所<textarea required x-model="order.address" rows="3"
+  class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3"></textarea></label>
+          <label class="text-sm md:col-span-2">備考<textarea x-model="order.note" rows="3" class="w-full mt-1 rounded-xl bg-white/10 border border-white/10 p-3"></textarea></label>
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="text-sm text-gray-300">合計 <span class="font-extrabold" x-text="`¥${buySubtotal().toLocaleString()}`"></span></div>
+          <button class="btn bg-emerald-400 text-black font-semibold px-6 py-3 rounded-2xl">注文を送信</button>
+        </div>
+      </form>
+      <p class="text-xs text-gray-400 mt-3">※ 決済は請求書/銀行振込を想定。StripeやSquareへの切替も可（後で導入可能な作り）。</p>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="pt-20 pb-10">
+    <div class="mx-auto max-w-7xl px-4 text-sm text-gray-400">
+      <div class="divider mb-6"></div>
+      <div class="flex flex-wrap gap-3 items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img :src="data.brand.logo" alt="logo" class="w-8 h-8 rounded-xl object-cover"/>
+          <span>© <span x-text="new Date().getFullYear()"></span> <span x-text="data.brand.name"></span></span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-white">特商法</a>
+          <a href="#" class="hover:text-white">プライバシーポリシー</a>
         </div>
       </div>
+    </div>
+  </footer>
 
-      <!-- スマホ共通の送付方法 -->
-      <div class="sendbox">
-        <h4>送付方法</h4>
-        <code>アドレス：noigrit@gmail.com
-件名：【TikTok契約書署名済み】
-本文：本名記載（フルネーム）</code>
-      </div>
-    </section>
+  <!-- ===== Data & App Logic ===== -->
+  <script id="data" type="application/json">
+  {
+    "meta": {
+      "title": "美は、戦略だ。｜プロ機器を現実的な価格で",
+      "description": "photomedicell ほか美容機器の直販サイト。最短1週間、3年保証、SNS集客講習つき。価格・性能・サポートの3拍子。"
+    },
+    "brand": {
+      "name": "NOI BEAUTY",
+      "logo": "https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=300&auto=format&fit=crop",
+      "tagline": "サロンDXで、勝てる美容経営。"
+    },
+    "cta": {
+      "line": "https://line.me/ja/",
+      "tel": "tel:070-3965-5563",
+      "telLabel": "070-3965-5563",
+      "quoteEmail": "info@example.com",
+      "orderEmail": "order@example.com"
+    },
+    "hero": {
+      "lead": "導入から集客・運用までを標準サポート。『最短回収』を設計したプロダクトです。",
+      "image": "https://images.unsplash.com/photo-1596461404969-9ae70b7b0cd5?q=80&w=1600&auto=format&fit=crop",
+      "monthly": 40000,
+      "stats": {"units": "300+", "roi": 6}
+    },
+    "socialProof": [
+      "https://dummyimage.com/200x60/ffffff/000000.png&text=Salon+A",
+      "https://dummyimage.com/200x60/ffffff/000000.png&text=Salon+B",
+      "https://dummyimage.com/200x60/ffffff/000000.png&text=Salon+C",
+      "https://dummyimage.com/200x60/ffffff/000000.png&text=Salon+D",
+      "https://dummyimage.com/200x60/ffffff/000000.png&text=Salon+E"
+    ],
+   "products": [
+  {
+    "type":"機器",
+    "sku":"PM-001",
+    "name":"Photomedicell",
+    "copy":"〜多くの要望に答えられる革命脱毛器〜",
+    "badge":"ベストセラー",
+    "price":2800000,
+    "priceNote":"※ 分割・リース可",
+    "stock":"即納",
+    "image":"https://images.unsplash.com/photo-1599050751795-5cdaaa1ffc51?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["SHR/OPT + RF","3,000W高出力","大型チラー搭載","3年保証"],
+    "specs":[
+      {"k":"搭載脱毛方式","v":"SHR / IPL（OPT） + RF / E-light"},
+      {"k":"パワー","v":"10〜50J/cm²"},
+      {"k":"波長","v":"430/530/590/640/690nm 他"},
+      {"k":"最大出力","v":"3,000W"},
+      {"k":"照射面積","v":"10×50mm / 15×50mm"},
+      {"k":"周波数","v":"1〜10Hz 調節可"},
+      {"k":"重量","v":"28kg"}
+    ],
+    "open":false
+  },
+  {
+    "type":"機器",
+    "sku":"CL-001",
+    "name":"Celllook",
+    "copy":"〜効果の可視化と顧客満足度MAXへ〜",
+    "badge":"人気",
+    "price":2100000,
+    "priceNote":"※ 分割・リース可",
+    "stock":"即納",
+    "image":"https://images.unsplash.com/photo-1580584128409-012d1e761a7b?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["効果可視化","顧客満足度UP","直感UI"],
+    "specs":[
+      {"k":"モード","v":"フェイシャル / スキン解析"},
+      {"k":"重量","v":"20kg"}
+    ],
+    "open":false
+  },
+  {
+    "type":"機器",
+    "sku":"DM-A",
+    "name":"機器（仮）A",
+    "copy":"COMING SOON",
+    "badge":"COMING SOON",
+    "price":1500000,
+    "priceNote":"※ 価格は仮",
+    "stock":"取寄",
+    "image":"https://images.unsplash.com/photo-1556228578-97c28c7b6757?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["低消費電力","簡単メンテ"],
+    "specs":[{"k":"方式","v":"IPL"}],
+    "open":false
+  },
+  {
+    "type":"機器",
+    "sku":"DM-B",
+    "name":"機器（仮）B",
+    "copy":"COMING SOON",
+    "badge":"COMING SOON",
+    "price":1200000,
+    "priceNote":"※ 価格は仮",
+    "stock":"取寄",
+    "image":"https://images.unsplash.com/photo-1601333144085-0c0b13f8b4bc?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["軽量","静音"],
+    "specs":[{"k":"方式","v":"IPL"}],
+    "open":false
+  },
+  {
+    "type":"機器",
+    "sku":"DM-C",
+    "name":"機器（仮）C",
+    "copy":"COMING SOON",
+    "badge":"COMING SOON",
+    "price":900000,
+    "priceNote":"※ 価格は仮",
+    "stock":"取寄",
+    "image":"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["ベーシック"],
+    "specs":[{"k":"方式","v":"IPL"}],
+    "open":false
+  },
 
-    <!-- PC -->
-    <section class="panel" id="p-pc" role="tabpanel" aria-labelledby="t-pc" aria-hidden="true">
-      <h2>PCで署名する場合</h2>
-      <p class="sub">お使いのOSを選んでください。</p>
-      <div class="subsel" role="group" aria-label="PC OS選択">
-        <button class="chip" id="c-mac"     aria-pressed="true"  type="button">Mac</button>
-        <button class="chip" id="c-windows" aria-pressed="false" type="button">Windows</button>
-      </div>
+  {
+    "type":"専売品",
+    "sku":"EX-GP",
+    "name":"ゴールドピーリング",
+    "copy":"〜結果重視で現実が理想を越える〜",
+    "badge":"専売品",
+    "price":null,
+    "priceMessage":"ロット販売につきお問い合わせください",
+    "stock":"即納",
+    "image":"https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["業務用","高満足度"],
+    "specs":[],
+    "open":false
+  },
+  {
+    "type":"専売品",
+    "sku":"EX-IVM",
+    "name":"IN VITI MIST",
+    "copy":"〜肌を守る6つの無添加〜",
+    "badge":"専売品",
+    "price":null,
+    "priceMessage":"ロット販売につきお問い合わせください",
+    "stock":"即納",
+    "image":"https://images.unsplash.com/photo-1545237017-3a3fc540cd0a?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["無添加","ミスト"],
+    "specs":[],
+    "open":false
+  },
+  {
+    "type":"専売品",
+    "sku":"EX-UVS",
+    "name":"VITI UV SERUM",
+    "copy":"〜世界最高水準UVカット値〜",
+    "badge":"専売品",
+    "price":null,
+    "priceMessage":"ロット販売につきお問い合わせください",
+    "stock":"即納",
+    "image":"https://images.unsplash.com/photo-1585238342028-4bbc2a4e13d8?q=80&w=1200&auto=format&fit=crop",
+    "highlights":["高UVカット"],
+    "specs":[],
+    "open":false
+  }
+],
+    "value": [
+      {"title":"工場提携×直販","desc":"中間マージンを削減し、品質はそのままに価格を最適化。利益ではなく価値で勝つ。"},
+      {"title":"アフターケアまで伴走","desc":"機器納入だけで終わらない。SNS講習・HP作成・CRM導入まで一気通貫サポート。"},
+      {"title":"なににしよーーーーー","desc":"なににしよーーーーーー"},
+      {"title":"なににしよーーーーーーー","desc":"なににしよーーーーーーーーー"}
+    ],
+    "compare": [
+      {"name":"当社製品","price":"180〜280万円","func":"脱毛/フェイシャル","warranty":"3年"},
+      {"name":"他社A","price":"350〜400万円","func":"脱毛のみ","warranty":"1年"},
+      {"name":"他社B","price":"350万円","func":"フェイシャルのみ","warranty":"1年"}
+    ],
+    "beforeAfter": [
+      {"before":"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1600&auto=format&fit=crop","after":"https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=1600&auto=format&fit=crop"}
+    ],
+    "faq": [
+      {"q":"ローン審査は厳しいですか？","a":"個人事業主様でも多く通過されています。金融機関や審査会社のご紹介も可能です。"},
+      {"q":"納期はどのくらいですか？","a":"在庫があるモデルは最短1週間。取寄せは2〜3週間が目安です。"},
+      {"q":"保証内容は？","a":"3年間の無償修理に加え、ダウン時の代替機をご用意します。"},
+      {"q":"導入後の集客支援は？","a":"SNS講習、HP作成、運用アドバイス、CRM導入まで一貫して支援します。"}
+    ]
+  }
+  </script>
 
-      <!-- Mac -->
-      <div class="pc-mac">
-        <div class="steps">
-          <div class="step">
-            <div class="step-title">契約書(PDF)のダウンロード</div>
-            <div class="step-body">メールの添付PDFをローカルに保存（わかりやすい場所）
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/mac_step1_1.png,screenshots/mac_step1_2.png" data-alt="Mac STEP1 ダウンロード">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">契約書(PDF)の記入</div>
-            <div class="step-body">PDFを開き「配信申込書兼承諾書」→フォーム入力ツールで各項目を記入
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/mac_step2_1.png,screenshots/mac_step2_2.png" data-alt="Mac STEP2 入力">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step"><div class="step-title">記入漏れ確認</div><div class="step-body">誤字・未入力がないか全ページを確認</div></div>
-          <div class="arrow">↓</div>
-          <div class="step"><div class="step-title">送付</div><div class="step-body">完成PDFをメールに添付して送信</div></div>
-        </div>
-      </div>
-
-      <!-- Windows -->
-      <div class="pc-windows" style="display:none;">
-        <div class="steps">
-          <div class="step">
-            <div class="step-title">PDFを開く</div>
-            <div class="step-body">ファイルを右クリック→「プログラムから開く」→Microsoft Edge
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/win_step1_1.png" data-alt="Windows STEP1 Edgeで開く">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">テキスト署名</div>
-            <div class="step-body">上部「テキストの追加」→氏名・日付など入力→ドラッグで位置調整
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/win_step2_1.png,screenshots/win_step2_2.png" data-alt="Windows STEP2 テキスト追加">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step">
-            <div class="step-title">固定化</div>
-            <div class="step-body">「印刷」→「Microsoft Print to PDF」で保存（フォント差異防止）
-              <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/win_step3_1.png" data-alt="Windows STEP3 PDF保存">(画像を参照)</span>
-            </div>
-          </div>
-          <div class="arrow">↓</div>
-          <div class="step"><div class="step-title">送付</div><div class="step-body">保存したPDFをメールに添付して送信</div></div>
-        </div>
-      </div>
-
-      <div class="sendbox">
-        <h4>送付方法</h4>
-        <code>アドレス：noigrit@gmail.com
-件名：【TikTok契約書署名済み】
-本文：本名記載（フルネーム）</code>
-      </div>
-    </section>
-
-    <!-- PRINT/HANDWRITE -->
-    <section class="panel" id="p-print" role="tabpanel" aria-labelledby="t-print" aria-hidden="true">
-      <h2>その他（印刷/手書き）</h2>
-      <p class="sub">「手書き必須」や紙原本回収の指定がある相手に確実。</p>
-      <div class="steps">
-        <div class="step"><div class="step-title">データ準備</div><div class="step-body">PDFをダウンロードしてUSBへ、またはコンビニ印刷アプリを準備
-          <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/print_step1_1.png" data-alt="印刷 STEP1 準備">(画像を参照)</span>
-        </div></div>
-        <div class="arrow">↓</div>
-        <div class="step"><div class="step-title">印刷</div><div class="step-body">店頭の案内に従いPDFを印刷（A4推奨、濃度は標準）
-          <span class="img-toggle" onclick="openGallery(this)" data-images="screenshots/print_step2_1.png" data-alt="印刷 STEP2 印刷">(画像を参照)</span>
-        </div></div>
-        <div class="arrow">↓</div>
-        <div class="step"><div class="step-title">記入</div><div class="step-body">ボールペンで署名・日付。修正は二重線＋訂正印の有無を事前確認</div></div>
-        <div class="arrow">↓</div>
-        <div class="step"><div class="step-title">スキャン</div><div class="step-body">スマホ/スキャナでPDF化→メールに添付して送信</div></div>
-      </div>
-
-      <div class="sendbox">
-        <h4>送付方法</h4>
-        <code>アドレス：noigrit@gmail.com
-件名：【TikTok契約書署名済み】
-本文：本名記載（フルネーム）</code>
-      </div>
-    </section>
-  </main>
-
-  <div class="footer">© 2025 NOIGRIT 署名マニュアル. 本ページは一般的な実務ノウハウの提供を目的としています。</div>
-
-  <!-- JS：タブ & 機種/OS 切り替え + モーダル -->
   <script>
-    // タブ切り替え
-    const tabs = Array.from(document.querySelectorAll('.tab'));
-    const panels = Array.from(document.querySelectorAll('.panel'));
-    function activateTop(id){
-      tabs.forEach(t=>t.setAttribute('aria-selected', String(t.id === 't-'+id)));
-      panels.forEach(p=>p.setAttribute('aria-hidden', String(p.id !== 'p-'+id)));
+function app(){
+  return {
+    // ---- state ----
+    data:{}, products:[], progress:50, productTab:'機器',
+    ui:{quoteOpen:false, buyOpen:false, checkoutOpen:false},
+    modal:{open:false, type:'quote', title:'', desc:''},
+    form:{salon:'', name:'', email:'', tel:'', note:'', product:''},
+    quoteSets:[], activeQuoteSet:0, buyCart:[],
+    order:{name:'', email:'', tel:'', address:'', note:''},
+
+    // ---- helpers ----
+    observeReveals(){
+      const els = document.querySelectorAll('[data-reveal]');
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -5% 0px" });
+      els.forEach(el => io.observe(el));
+    },
+    onScroll(){
+      const h=document.documentElement;
+      const scrolled=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100||0;
+      document.documentElement.style.setProperty('--scroll', scrolled.toFixed(2));
+    },
+
+    // ---- lifecycle ----
+    init(){
+      try{ this.data = JSON.parse(document.getElementById('data').textContent) }catch(e){ console.error(e) }
+      this.products = this.data.products
+
+      // restore
+      const qs = localStorage.getItem('quoteSets');
+      const bc = localStorage.getItem('buyCart');
+      this.quoteSets = qs ? JSON.parse(qs) : [{id: crypto.randomUUID(), name:'見積A', items:[] }];
+      this.buyCart   = bc ? JSON.parse(bc) : [];
+      this.activeQuoteSet = 0;
+
+      this.$nextTick(()=>{
+        this.observeReveals();
+        this.onScroll();
+        window.addEventListener('scroll', this.onScroll.bind(this), { passive:true });
+      });
+
+      // 再描画時にアニメ監視を張り直す
+      this.$watch('productTab', () => this.$nextTick(() => this.observeReveals()));
+      this.$watch('products',  () => this.$nextTick(() => this.observeReveals()));
+    },
+    persist(){
+      localStorage.setItem('quoteSets', JSON.stringify(this.quoteSets));
+      localStorage.setItem('buyCart', JSON.stringify(this.buyCart));
+    },
+
+    // ---- view actions ----
+    sortBy(t){
+      if(t==='priceUp'){ this.products=[...this.products].sort((a,b)=>(a.price??0)-(b.price??0)) }
+      else if(t==='priceDown'){ this.products=[...this.products].sort((a,b)=>(b.price??0)-(a.price??0)) }
+      this.$nextTick(()=> this.observeReveals());
+    },
+    filteredProducts(){ return this.products.filter(p => p.type === this.productTab) },
+    toggle(p){ p.open = !p.open },
+
+    // ---- quote cart ----
+    openQuoteDrawer(){ this.ui.quoteOpen = true },
+    addQuoteSet(){
+      this.quoteSets.push({id:crypto.randomUUID(), name:`見積${String.fromCharCode(65+this.quoteSets.length)}`, items:[]});
+      this.activeQuoteSet = this.quoteSets.length - 1;
+      this.persist();
+    },
+    removeQuoteSet(i){
+      this.quoteSets.splice(i,1);
+      if(this.activeQuoteSet>=this.quoteSets.length) this.activeQuoteSet=0;
+      if(!this.quoteSets.length) this.addQuoteSet();
+      this.persist();
+    },
+    addQuote(p){
+      const set=this.quoteSets[this.activeQuoteSet];
+      const exist=set.items.find(it=>it.sku===p.sku);
+      if(exist){ exist.qty=(exist.qty||1)+1 } else { set.items.push({...p, qty:1}) }
+      this.persist();
+      alert('見積もりカートに追加しました！');
+    },
+    removeQuoteItem(si, idx){ this.quoteSets[si].items.splice(idx,1); this.persist() },
+    quoteSubtotal(si){ return this.quoteSets[si].items.reduce((s,it)=>s+((it.price??0)*(it.qty||1)),0) },
+    quoteCount(){ return this.quoteSets.reduce((n,s)=>n+s.items.reduce((m,it)=>m+(it.qty||1),0),0) },
+
+    // ---- buy cart ----
+    openBuyDrawer(){ this.ui.buyOpen=true },
+    addBuy(p){
+      const ex=this.buyCart.find(it=>it.sku===p.sku);
+      if(ex){ ex.qty=(ex.qty||1)+1 } else { this.buyCart.push({...p, qty:1}) }
+      this.persist(); this.ui.buyOpen=true
+    },
+    removeBuyItem(i){ this.buyCart.splice(i,1); this.persist() },
+    buySubtotal(){ return this.buyCart.reduce((s,it)=>s+((it.price??0)*(it.qty||1)),0) },
+    buyCount(){ return this.buyCart.reduce((n,it)=>n+(it.qty||1),0) },
+
+    // ---- lead & order ----
+    openLead(type, product){
+      this.modal.type=type; this.modal.open=true;
+      this.form={salon:'', name:'', email:'', tel:'', note:'', product:product||''};
+      this.modal.title= type==='quote'? '無料見積もり':'資料請求';
+      this.modal.desc=  type==='quote'? '2分で完了。担当者から最短当日中にご連絡します。':'最新カタログをメールでお送りします。';
+    },
+    submitLead(){
+      const payload={...this.form, type:this.modal.type, ts:new Date().toISOString()};
+      const mailto=`mailto:${encodeURIComponent(this.data.cta.quoteEmail)}?subject=${encodeURIComponent('LPお問い合わせ('+this.modal.type+')')}&body=${encodeURIComponent(JSON.stringify(payload,null,2))}`;
+      window.location.href=mailto; this.modal.open=false;
+      alert('送信を開始しました。メールソフトが開かない場合はメールでご連絡ください。');
+    },
+    sendQuote(si){
+      const set=this.quoteSets[si];
+      const body={
+        type:'quote',
+        setName:set.name,
+        items:set.items.map(i=>({sku:i.sku,name:i.name,price:i.price,qty:i.qty})),
+        subtotal:this.quoteSubtotal(si),
+        ts:new Date().toISOString()
+      };
+      const mailto=`mailto:${encodeURIComponent(this.data.cta.quoteEmail)}?subject=${encodeURIComponent('見積依頼 '+set.name)}&body=${encodeURIComponent(JSON.stringify(body,null,2))}`;
+      window.location.href=mailto;
+    },
+    sendAllQuotes(){
+      const payload={
+        sets:this.quoteSets.map((s,i)=>({
+          name:s.name,
+          items:s.items.map(it=>({sku:it.sku,name:it.name,price:it.price,qty:it.qty})),
+          subtotal:this.quoteSubtotal(i)
+        })),
+        ts:new Date().toISOString()
+      };
+      const mailto=`mailto:${encodeURIComponent(this.data.cta.quoteEmail)}?subject=${encodeURIComponent('見積依頼(複数)')}&body=${encodeURIComponent(JSON.stringify(payload,null,2))}`;
+      window.location.href=mailto;
+    },
+    checkout(){ if(!this.buyCart.length) return alert('カートが空です'); this.ui.checkoutOpen=true },
+    submitOrder(){
+      const order={
+        customer:this.order,
+        items:this.buyCart.map(i=>({sku:i.sku,name:i.name,price:i.price,qty:i.qty})),
+        total:this.buySubtotal(),
+        ts:new Date().toISOString()
+      };
+      const mailto=`mailto:${encodeURIComponent(this.data.cta.orderEmail)}?subject=${encodeURIComponent('注文依頼')}&body=${encodeURIComponent(JSON.stringify(order,null,2))}`;
+      window.location.href=mailto; this.ui.checkoutOpen=false;
     }
-    tabs.forEach(t=> t.addEventListener('click', ()=> activateTop(t.id.replace('t-',''))));
-
-    // スマホ切替（iPhone/Android）
-    const phoneI = document.querySelector('.phone-iphone');
-    const phoneA = document.querySelector('.phone-android');
-    const chipI  = document.getElementById('c-iphone');
-    const chipA  = document.getElementById('c-android');
-    if(chipI && chipA && phoneI && phoneA){
-      chipI.addEventListener('click',()=>{
-        chipI.setAttribute('aria-pressed','true'); chipA.setAttribute('aria-pressed','false');
-        phoneI.style.display='block'; phoneA.style.display='none';
-      });
-      chipA.addEventListener('click',()=>{
-        chipI.setAttribute('aria-pressed','false'); chipA.setAttribute('aria-pressed','true');
-        phoneI.style.display='none'; phoneA.style.display='block';
-      });
-    }
-
-    // PC切替（Mac/Windows）
-    const pcm   = document.querySelector('.pc-mac');
-    const pcw   = document.querySelector('.pc-windows');
-    const chipM = document.getElementById('c-mac');
-    const chipW = document.getElementById('c-windows');
-    if(chipM && chipW && pcm && pcw){
-      chipM.addEventListener('click',()=>{
-        chipM.setAttribute('aria-pressed','true'); chipW.setAttribute('aria-pressed','false');
-        pcm.style.display='block'; pcw.style.display='none';
-      });
-      chipW.addEventListener('click',()=>{
-        chipM.setAttribute('aria-pressed','false'); chipW.setAttribute('aria-pressed','true');
-        pcm.style.display='none'; pcw.style.display='block';
-      });
-    }
-
-    // ===== モーダル・ギャラリー（1つを使い回す） =====
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-inner" role="dialog" aria-modal="true">
-        <div class="modal-header"><span class="modal-close" aria-label="閉じる">&times;</span></div>
-        <div class="modal-body"><img alt=""></div>
-        <div class="modal-footer">
-          <button class="nav-btn" data-dir="-1">← 前へ</button>
-          <span class="counter">1 / 1</span>
-          <button class="nav-btn" data-dir="1">次へ →</button>
-        </div>
-        <div class="thumbs"></div>`;
-    document.body.appendChild(modal);
-
-    let gallery = { urls:[], index:0, alt:'' };
-
-    function render() {
-      const img = modal.querySelector('.modal-body img');
-      const counter = modal.querySelector('.counter');
-      const thumbs = modal.querySelector('.thumbs');
-      img.src = gallery.urls[gallery.index];
-      img.alt = gallery.alt || 'スクリーンショット';
-      counter.textContent = (gallery.index+1) + ' / ' + gallery.urls.length;
-      thumbs.innerHTML = '';
-      gallery.urls.forEach((u,i)=>{
-        const t = document.createElement('img');
-        t.src = u; t.alt = 'thumb '+(i+1);
-        if(i===gallery.index) t.classList.add('active');
-        t.addEventListener('click', ()=>{ gallery.index=i; render(); });
-        thumbs.appendChild(t);
-      });
-    }
-    function show(delta){ gallery.index = (gallery.index + delta + gallery.urls.length) % gallery.urls.length; render(); }
-    function closeModal(){ modal.style.display='none'; gallery = { urls:[], index:0, alt:'' }; }
-
-    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-    modal.querySelector('.modal-close').addEventListener('click', closeModal);
-    modal.querySelectorAll('.nav-btn').forEach(btn=> btn.addEventListener('click', ()=> show(parseInt(btn.dataset.dir,10))));
-    document.addEventListener('keydown', (e)=>{
-      if(modal.style.display==='block'){
-        if(e.key==='Escape') closeModal();
-        if(e.key==='ArrowRight') show(1);
-        if(e.key==='ArrowLeft') show(-1);
-      }
-    });
-
-    // クリック委譲（onclickが抜けていても動くように）
-    document.addEventListener('click', (e)=>{
-      const trigger = e.target.closest('.img-toggle');
-      if(!trigger) return;
-      openGallery(trigger);
-    });
-
-    // 公開関数：トリガー要素から data-images を読む
-    window.openGallery = function(trigger){
-      const urls = (trigger.dataset.images || '').split(',').map(s=>s.trim()).filter(Boolean);
-      if(!urls.length) return;
-      gallery.urls = urls;
-      gallery.index = 0;
-      gallery.alt = trigger.dataset.alt || '';
-      render();
-      modal.style.display='block';
-    };
+  }
+}
   </script>
 </body>
 </html>
