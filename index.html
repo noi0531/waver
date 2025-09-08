@@ -488,28 +488,7 @@
   </footer>
 
   <script>
-// Intro fadeout (auto + user skip)
-      Intro fadeou
-const introEl = document.getElementById('intro');
-const hideIntro = () => {
-  if (!introEl || introEl.classList.contains('is-hide')) return;
-  introEl.classList.add('is-hide');
-  setTimeout(()=> introEl.classList.add('is-gone'), 1200);
-};
-
-window.addEventListener('load', () => {
-  // イントロは2.6秒後にフェードアウト
-  setTimeout(hideIntro, 2600);
-
-  // ★ 初回表示で名言とキャラ情報を表示（透明→表示へ）
-  document.getElementById('quote-text')?.classList.add('is-show');
-  document.getElementById('char-info')?.classList.add('is-show');
-});
-
-['click','wheel','touchstart','keydown'].forEach(ev =>
-  window.addEventListener(ev, hideIntro, {passive:true})
-);
-    // Reveal on scroll + bullet holes trigger
+      
     const io = new IntersectionObserver((ents)=>{
       ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); if(e.target.classList.contains('bh-target')) sprinkleHoles(e.target); }});
     },{threshold:.08});
