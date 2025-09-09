@@ -141,6 +141,124 @@
       #cast .grid{grid-template-columns:repeat(auto-fit,minmax(220px,260px));justify-content:center}
       #cast .card{width:260px}
     }
+      /* ===== CAST tabs & panels ===== */
+.cast-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.05);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .08em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .3s;
+}
+.tab-btn.active {
+  background: var(--accent);
+}
+.cast-panels {
+  position: relative;
+}
+.cast-panel {
+  display: none;
+  animation: fadeSlide .6s ease;
+}
+.cast-panel.active {
+  display: block;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+      /* CAST cards smaller */
+#cast .grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  justify-content: center;
+}
+#cast .card {
+  width: 180px;  /* ← 小さめに調整 */
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.02);
+  border-radius: 12px;
+  overflow: hidden;
+}
+#cast .card .ph {
+  aspect-ratio: 3/4;   /* ← 縦長比率に変更（キャラ絵向け） */
+  background: #0d0d14;
+  display: grid;
+  place-items: center;
+}
+#cast .card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* ===== Quote / Image swap fade ===== */
+.swap-fade{
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .35s ease, transform .35s ease;
+  will-change: opacity, transform;
+}
+.swap-fade.swap-hide{
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* （任意）テキストは少しだけ遅延で気持ち良く */
+#quote-text.swap-fade{ transition-duration: .42s; }
+/* ===== Intro: single glass shatter ===== */
+.intro__logo-wrap{ position:relative; overflow:visible; }
+.glass {
+  position:absolute; inset:-14px; border-radius:14px; pointer-events:none; z-index:12;
+  /* うっすらガラス感（反射） */
+  background:
+    radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,0));
+  box-shadow: inset 0 0 20px rgba(255,255,255,.06);
+  opacity:.8;
+}
+.glass.is-cracked{
+  /* 中央に穴（透過）を開ける */
+  -webkit-mask: radial-gradient(circle at 50% 52%, transparent 0 24%, #000 26%);
+          mask: radial-gradient(circle at 50% 52%, transparent 0 24%, #000 26%);
+  animation: glassFlash .18s ease-out;
+}
+@keyframes glassFlash { from{ filter:brightness(1.6); } to{ filter:brightness(1); } }
+
+/* ひびSVGを描画して“スッ”と伸びる */
+.cracks{ position:absolute; inset:0; }
+.cracks path{
+  stroke: rgba(255,255,255,.9);
+  stroke-width:1.2; stroke-linecap:round;
+  stroke-dasharray: var(--len,100); stroke-dashoffset: var(--len,100);
+  filter: drop-shadow(0 0 6px rgba(255,255,255,.35));
+  animation: crackDraw .7s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes crackDraw { to{ stroke-dashoffset:0; } }
+
+/* 飛び散る破片 */
+.shard{
+  position:absolute; width:12px; height:24px; left:50%; top:50%;
+  background: linear-gradient(#dfe4ea, rgba(255,255,255,0));
+  border: 1px solid rgba(255,255,255,.25);
+  border-bottom:none; opacity:1; transform-origin:6px 20px;
+  clip-path: polygon(50% 0, 100% 70%, 50% 100%, 0 70%);
+  animation: flyShards .9s ease-out forwards;
+}
+@keyframes flyShards {
+  to { transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0));
+       opacity:0; filter:blur(1px); }
+}
+
   </style>
 </head>
 <body>
@@ -165,6 +283,18 @@
     </div>
   </nav>
   <canvas id="fx-embers" aria-hidden="true"></canvas>
+<!-- BGM（ループ・事前読み込み・初期ミュート） -->
+<audio id="bgm" preload="auto" loop muted>
+  <source src="assets/bgm/theme.mp3" type="audio/mpeg">
+  <source src="assets/bgm/theme.ogg" type="audio/ogg">
+</audio>
+
+<!-- サウンド切替ボタン（任意。UI欲しければ） -->
+<button id="sound-toggle" aria-pressed="false" aria-label="サウンドON/OFF" style="
+  position:fixed; right:16px; bottom:16px; z-index:60;
+  border:1px solid rgba(255,255,255,.2); background:rgba(0,0,0,.5);
+  color:#fff; padding:10px 12px; border-radius:999px; backdrop-filter:blur(6px);
+  font-weight:700; letter-spacing:.06em; cursor:pointer;">SOUND: OFF</button>
 
   <!-- Header -->
   <header id="top" class="site-header" role="banner" aria-label="メインビジュアル">
@@ -184,19 +314,6 @@
       </div>
     </div>
   </header>
-
-  <!-- NEWS -->
-  <section id="news">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">NEWS</h2></div>
-      <ul class="news">
-        <li class="reveal"><time datetime="2025-09-01">2025.09.01</time><div>特設サイト公開。ティザービジュアルを解禁しました。</div></li>
-        <li class="reveal"><time datetime="2025-09-05">2025.09.05</time><div>キービジュアル第2弾を公開予定。</div></li>
-        <li class="reveal"><time datetime="2025-09-20">2025.09.20</time><div><a href="#audio">「WAVER2（音声版）」</a>の期間限定公開が決定。</div></li>
-      </ul>
-    </div>
-  </section>
-
   <!-- STORY -->
   <section id="story">
     <div class="wrap">
@@ -207,21 +324,43 @@
       </div>
     </div>
   </section>
+    
+    <section id="theme">
+  <div class="wrap">
+    <div class="sec__hd reveal"><span class="bar"></span><h2 class="sec__title">THEME SONG</h2></div>
+    <p class="lead reveal">主題歌「スクランブル」 — SPYAIR   作詞：MOMIKEN 作曲：UZ。</p>
+  </div>
+</section>
 
-  <!-- CAST -->
-  <section id="cast">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">CAST</h2></div>
-      <div class="grid">
-        <!-- ダミー -->
-        <article class="card reveal"><div class="ph"><img src="assets/cast-1.jpg" alt="キャスト1" loading="lazy"></div><div class="bd"><strong>キャスト1</strong><div class="meta">Cast</div></div></article>
-        <article class="card reveal"><div class="ph"><img src="assets/cast-2.jpg" alt="キャスト2" loading="lazy"></div><div class="bd"><strong>キャスト2</strong><div class="meta">Cast</div></div></article>
-        <article class="card reveal"><div class="ph"><img src="assets/cast-3.jpg" alt="キャスト3" loading="lazy"></div><div class="bd"><strong>キャスト3</strong><div class="meta">Cast</div></div></article>
-        <article class="card reveal"><div class="ph"><img src="assets/cast-4.jpg" alt="キャスト4" loading="lazy"></div><div class="bd"><strong>キャスト4</strong><div class="meta">Cast</div></div></article>
-        <article class="card reveal"><div class="ph"><img src="assets/cast-5.jpg" alt="キャスト5" loading="lazy"></div><div class="bd"><strong>キャスト5</strong><div class="meta">Cast</div></div></article>
+<!-- CAST -->
+<section id="cast">
+  <div class="wrap">
+    <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">CAST</h2></div>
+
+    <!-- Tabs -->
+    <div class="cast-tabs">
+      <button class="tab-btn active" data-tab="fam">ChamaFamiglia</button>
+      <button class="tab-btn" data-tab="unpub1">未公開</button>
+      <button class="tab-btn" data-tab="unpub2">未公開</button>
+    </div>
+
+    <!-- Panels -->
+    <div class="cast-panels">
+      <!-- それぞれのパネルは空のグリッドだけ用意。中身はJSで所定人数ぶん自動生成します -->
+      <div class="cast-panel active" id="fam">
+        <div class="grid" id="fam-grid"></div>
+      </div>
+
+      <div class="cast-panel" id="unpub1">
+        <div class="grid" id="unpub1-grid"></div>
+      </div>
+
+      <div class="cast-panel" id="unpub2">
+        <div class="grid" id="unpub2-grid"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- STAFF -->
   <section id="staff">
@@ -233,6 +372,17 @@
         <li class="reveal"><strong class="role">脚本</strong><span>Chama</span></li>
         <li class="reveal"><strong class="role">制作</strong><span>Suzuki</span></li>
         <li class="reveal"><strong class="role">キャラクターデザイン／総作画監督</strong><span>Chama</span></li>
+      </ul>
+    </div>
+  </section>
+     <!-- NEWS -->
+  <section id="news">
+    <div class="wrap">
+      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">NEWS</h2></div>
+      <ul class="news">
+        <li class="reveal"><time datetime="2025-09-01">2025.09.01</time><div>特設サイト公開。ティザービジュアルを解禁しました。</div></li>
+        <li class="reveal"><time datetime="2025-09-05">2025.09.05</time><div>キービジュアル第2弾を公開予定。</div></li>
+        <li class="reveal"><time datetime="2025-09-20">2025.09.20</time><div><a href="#audio">「WAVER2（音声版）」</a>の期間限定公開が決定。</div></li>
       </ul>
     </div>
   </section>
@@ -280,76 +430,140 @@
     </div>
   </footer>
 
-  <!-- ===== Script 1: Intro（フェードイン→連射→フェードアウト） ===== -->
-  <script>
+<!-- ===== Script 1: Intro（ガラス割り → フェードアウト + BGM） ===== -->
+<script>
   const introEl  = document.getElementById('intro');
   const logoEl   = document.querySelector('.intro__logo');
   let introDone  = false;
+
+  // ===== BGM =====
+  let bgmStarted = false;
+  function playBGM() {
+    if (bgmStarted) return;
+    const el = document.getElementById('bgm');
+    if (!el) return;
+
+    // フェードイン
+    const fadeIn = () => {
+      try { el.volume = 0; } catch {}
+      el.muted = false;
+      const step = () => {
+        if (el.volume < 0.6) {
+          el.volume = Math.min(0.6, el.volume + 0.05);
+          requestAnimationFrame(step);
+        }
+      };
+      requestAnimationFrame(step);
+    };
+
+    el.play().then(() => {
+      bgmStarted = true;
+      fadeIn();
+      const btn = document.getElementById('sound-toggle');
+      if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+    }).catch(() => {
+      // 自動再生ブロック時：次のユーザー操作で再試行
+      const tryOnUser = () => {
+        el.play().then(() => {
+          bgmStarted = true;
+          fadeIn();
+          const btn = document.getElementById('sound-toggle');
+          if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+          ['click','touchstart','keydown'].forEach(ev => window.removeEventListener(ev, tryOnUser));
+        }).catch(()=>{ /* まだブロックなら次の操作で再試行 */ });
+      };
+      ['click','touchstart','keydown'].forEach(ev => window.addEventListener(ev, tryOnUser, { once:true, passive:true }));
+    });
+  }
 
   function hideIntroOnce(){
     if (introDone || !introEl) return;
     introDone = true;
     introEl.classList.add('is-hide');
     setTimeout(()=> introEl.classList.add('is-gone'), 1200);
+    // 退場と同時にBGM
+    playBGM();
   }
 
-  function shootLogo(target, opts={}){
-    const wrap = target?.closest('.intro__logo-wrap');
+  // ===== ガラス割り（単発） =====
+  function shatterOnce(){
+    const wrap = document.querySelector('.intro__logo-wrap');
     if(!wrap) return hideIntroOnce();
 
-    const rect = target.getBoundingClientRect();
-    const count    = opts.count ?? 18;
-    const spread   = opts.spread ?? 0.85;
-    const interval = opts.interval ?? 80;
-    let i = 0;
+    // ガラス面
+    const glass = document.createElement('div');
+    glass.className = 'glass';
+    wrap.appendChild(glass);
 
-    function hit(){
-      const rx = (Math.random()-0.5)*2;
-      const ry = (Math.random()-0.5)*2;
-      const bx = rect.width  * 0.5 + rx * rect.width  * spread * 0.5;
-      const by = rect.height * 0.45+ ry * rect.height * spread * 0.45;
+    // ひび（中央→外周6方向）SVG
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS,'svg');
+    svg.setAttribute('class','cracks');
+    svg.setAttribute('viewBox','0 0 100 100');
+    svg.setAttribute('preserveAspectRatio','none');
+    const lines = [
+      "M50 50 L50 4",
+      "M50 50 L94 28",
+      "M50 50 L92 82",
+      "M50 50 L8 86",
+      "M50 50 L6 26",
+      "M50 50 L50 96"
+    ];
+    lines.forEach((d,idx)=>{
+      const p = document.createElementNS(svgNS,'path');
+      p.setAttribute('d', d);
+      p.style.setProperty('--len', String(80 + (idx%3)*35));
+      p.style.animationDelay = (idx*40) + 'ms';
+      svg.appendChild(p);
+    });
+    glass.appendChild(svg);
 
-      const hole = document.createElement('div');
-      hole.className = 'bh';
-      hole.style.left = (bx - 12) + 'px';
-      hole.style.top  = (by - 12) + 'px';
-      hole.style.setProperty('--rot',(Math.random()*60-30)+'deg');
-      wrap.appendChild(hole);
-
-      const smoke = document.createElement('div');
-      smoke.className = 'bh-smoke';
-      smoke.style.left = bx + 'px';
-      smoke.style.top  = by + 'px';
-      wrap.appendChild(smoke);
-      setTimeout(()=> smoke.remove(), 1400);
-
-      i++;
-      if(i < count){ setTimeout(hit, interval); }
-      else { setTimeout(hideIntroOnce, 600); }
+    // 破片を少し飛ばす
+    for(let i=0;i<14;i++){
+      const s = document.createElement('span');
+      s.className = 'shard';
+      const ang  = Math.random()*Math.PI*2;
+      const dist = 90 + Math.random()*140;
+      s.style.setProperty('--tx', Math.cos(ang)*dist + 'px');
+      s.style.setProperty('--ty', Math.sin(ang)*dist + 'px');
+      s.style.setProperty('--rot', (Math.random()*160-80) + 'deg');
+      s.style.animationDelay = (i*12)+'ms';
+      s.style.left = 'calc(50% - 6px)';
+      s.style.top  = 'calc(50% - 12px)';
+      glass.appendChild(s);
     }
-    hit();
+
+    // 穴＆フラッシュ
+    requestAnimationFrame(()=> glass.classList.add('is-cracked'));
+
+    // 少し見せてからイントロ退場
+    setTimeout(hideIntroOnce, 1100);
   }
 
+  // ===== イントロ開始（← これが抜けて止まってた） =====
   function startIntro(){
     document.getElementById('quote-text')?.classList.add('is-show');
     document.getElementById('char-info')?.classList.add('is-show');
-    setTimeout(() => shootLogo(logoEl, { count: 18, spread: 0.85, interval: 80 }), 1400);
+    setTimeout(() => shatterOnce(), 1200); // 単発ガラス割り演出
   }
 
+  // ロード完了で起動（ロゴ画像の読み込み状況に対応）
   window.addEventListener('load', () => {
     if (logoEl?.complete) startIntro();
     else logoEl?.addEventListener('load', startIntro, { once:true });
   });
 
+  // ユーザー操作でも退避できるようにしておく（念のため）
   ['click','wheel','touchstart','keydown'].forEach(ev =>
     window.addEventListener(ev, hideIntroOnce, {passive:true})
   );
 
+  // フォールバック（万一演出が失敗しても固まらない）
   setTimeout(hideIntroOnce, 8000);
-  </script>
+</script>
 
-  <!-- ===== Script 2: 残りの演出＆機能 ===== -->
-  <script>
+<!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
+<script>
   // Reveal on scroll + bullet holes trigger
   const io = new IntersectionObserver((ents)=>{
     ents.forEach(e=>{
@@ -406,7 +620,7 @@
     }
   }
 
-  // Embers FX (site-wide)
+  // Embers FX
   (function(){
     const c = document.getElementById('fx-embers');
     if(!c) return; const dpr = Math.min(2, window.devicePixelRatio||1);
@@ -429,43 +643,134 @@
   })();
 
   // ===== Character Quotes Rotator =====
-  const quotes = [
-    {quote:"この物語の主人公は俺らだからよ─", img:"assets/char-1.jpg", name:"ちゃま", cv:"chama", desc:"熱しやすく冷めやすい。背中で語る姿はまさにKING"},
-    {quote:"皆となら負ける気はしません─", img:"assets/char-2.jpg", name:"珠来", cv:"Suzuki", desc:"随一の忠誠心。冷静で分析上手なまとめ役"},
-    {quote:"上等。全員消しといてやるよ─", img:"assets/char-3.jpg", name:"るみみん", cv:"neki", desc:"すぐキレるが仲間思い。最強のリードオフマン"}
-  ];
-  let qIndex = 0;
-  function showQuote(i){
-    const q = quotes[i];
-    const qt = document.getElementById('quote-text');
-    const imgEl = document.querySelector('#char-info .char-img');
-    const nameEl = document.querySelector('#char-info .char-name');
-    const cvEl = document.querySelector('#char-info .char-cv');
-    const descEl = document.querySelector('#char-info .char-desc');
+// ===== Character Quotes Rotator =====
+const quotes = [
+  {quote:"この物語の主人公は俺らだからよ─", img:"assets/char-1.jpg", name:"ちゃま", cv:"chama", desc:"熱しやすく冷めやすい。背中で語る姿はまさにKING"},
+  {quote:"皆となら負ける気はしません─", img:"assets/char-2.jpg", name:"珠来", cv:"Suzuki", desc:"随一の忠誠心。冷静で分析上手なまとめ役"},
+  {quote:"上等。全員消しといてやるよ─", img:"assets/char-3.jpg", name:"るみみん", cv:"neki", desc:"すぐキレるが仲間思い。最強のリードオフマン"},
+  // …（重複は残しても動作OK。後で整えるならここを調整）
+];
 
-    qt.classList.add('swap-hide');
-    imgEl.classList.add('swap-hide');
+let qIndex = 0;
 
-    const pre = new Image();
-    pre.onload = apply; pre.onerror = apply; pre.src = q.img;
+function showQuote(i){
+  const q = quotes[i];
+  const qt = document.getElementById('quote-text');
+  const imgEl = document.querySelector('#char-info .char-img');
+  const nameEl = document.querySelector('#char-info .char-name');
+  const cvEl = document.querySelector('#char-info .char-cv');
+  const descEl = document.querySelector('#char-info .char-desc');
 
-    function apply(){
-      setTimeout(()=>{
-        qt.textContent = q.quote;
-        nameEl.textContent = q.name;
-        cvEl.textContent = 'CV.' + q.cv;
-        descEl.textContent = q.desc;
-        if(imgEl.src !== q.img) imgEl.src = q.img;
-        requestAnimationFrame(()=>{
-          qt.classList.remove('swap-hide');
-          imgEl.classList.remove('swap-hide');
-          try { sprinkleHoles(qt, {count: 1 + Math.floor(Math.random()*2), radius: 0.22}); } catch(e){}
-        });
-      }, 180);
-    }
+  qt.classList.add('swap-hide');
+  imgEl.classList.add('swap-hide');
+
+  const pre = new Image();
+  pre.onload = apply; pre.onerror = apply; pre.src = q.img;
+
+  function apply(){
+    setTimeout(()=>{
+      qt.textContent = q.quote;
+      nameEl.textContent = q.name;
+      cvEl.textContent = 'CV.' + q.cv;
+      descEl.textContent = q.desc;
+      if(imgEl.src !== q.img) imgEl.src = q.img;
+      requestAnimationFrame(()=>{
+        qt.classList.remove('swap-hide');
+        imgEl.classList.remove('swap-hide');
+        try { sprinkleHoles(qt, {count: 1 + Math.floor(Math.random()*2), radius: 0.22}); } catch(e){}
+      });
+    }, 180);
   }
-  function rotateQuotes(){ showQuote(qIndex); qIndex=(qIndex+1)%quotes.length; setTimeout(rotateQuotes,5000); }
-  if(quotes.length>0) rotateQuotes();
-  </script>
+}
+
+function rotateQuotes(){
+  showQuote(qIndex);
+
+  // デフォルト 6秒（=従来より+1秒）
+  let delay = 6000;
+
+  // ちゃま（index=0）だけ +3秒 → 9秒
+  if (qIndex === 0) delay = 9000;
+
+  qIndex = (qIndex + 1) % quotes.length;
+  setTimeout(rotateQuotes, delay);
+}
+
+// ★ 最後に起動
+rotateQuotes();
+  // ===== Sound toggle button =====
+  (function(){
+    const btn = document.getElementById('sound-toggle');
+    const el  = document.getElementById('bgm');
+    if(!btn || !el) return;
+
+    btn.addEventListener('click', () => {
+      if (el.paused) {
+        el.muted = false;
+        el.play().then(()=>{
+          btn.textContent = 'SOUND: ON';
+          btn.setAttribute('aria-pressed','true');
+        }).catch(()=>{/* ブロック時は次のユーザー操作で再試行 */});
+      } else {
+        el.pause();
+        btn.textContent = 'SOUND: OFF';
+        btn.setAttribute('aria-pressed','false');
+      }
+    });
+  })();
+    </script> 
+    <!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
+<script>
+  // ここに既存の Reveal / Smooth scroll / Quotes rotator などがある
+
+  // ===== Sound toggle button =====
+    // ===== CAST カード自動生成 =====
+// 実カード（画像・名前）があるぶんはここに列挙。残りは Coming Soon で埋めます。
+const famData = [
+  { img: 'assets/cast-1.jpg', name: 'キャラ1', meta: 'ChamaFamiglia' },
+  // 以降、実データが揃い次第ここに追記
+];
+const unpub1Data = []; // 後で差し替え
+const unpub2Data = []; // 後で差し替え
+
+function makeCard({img, name, meta}) {
+  const article = document.createElement('article');
+  article.className = 'card';
+  article.innerHTML = `
+    <div class="ph"><img src="${img}" alt="${name || 'Coming Soon'}"></div>
+    <div class="bd"><strong>${name || 'Coming Soon'}</strong><div class="meta">${meta || ''}</div></div>
+  `;
+  return article;
+}
+
+function fillGrid(gridId, data, targetCount, metaLabel) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  data.slice(0, targetCount).forEach(item => grid.appendChild(makeCard(item)));
+  for (let i = data.length; i < targetCount; i++) {
+    grid.appendChild(makeCard({
+      img: 'assets/comingsoon.jpg',
+      name: 'Coming Soon',
+      meta: metaLabel
+    }));
+  }
+}
+
+// 所定人数で埋める
+fillGrid('fam-grid',   famData,   12, 'ChamaFamiglia');
+fillGrid('unpub1-grid',unpub1Data, 8, '未公開');
+fillGrid('unpub2-grid',unpub2Data,10, '未公開');
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.cast-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
