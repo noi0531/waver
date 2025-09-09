@@ -258,18 +258,43 @@
   to { transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0));
        opacity:0; filter:blur(1px); }
 }
+/* ===== Typing Intro ===== */
+.type-line{
+  font-size:clamp(20px,5.2vw,56px);
+  font-weight:900;
+  letter-spacing:.08em;
+  text-align:center;
+  max-width:min(92vw,1100px);
+  margin:0 24px;
+  line-height:1.25;
+  text-shadow:0 0 16px rgba(229,9,20,.35);
+  opacity:1;
+  transition:opacity .5s ease;
+}
+.caret{
+  display:inline-block;
+  width:.6ch; height:1em; transform:translateY(.18em);
+  background:currentColor; opacity:.85; margin-left:.1ch;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{ 50%{ opacity:.15 } }
+.type-line.is-out{ opacity:0 }
+
+/* 低速環境配慮 */
+@media (prefers-reduced-motion:reduce){
+  .caret{ animation:none }
+  .type-line{ transition:none }
+}
 
   </style>
 </head>
 <body>
-  <!-- Intro -->
-  <div id="intro" class="intro">
-    <div class="intro__logo-wrap">
-      <!-- 参考画像を assets/intro-waver3.png に置く -->
-      <img class="intro__logo" src="assets/intro-waver3.png" alt="WAVER 3">
-    </div>
-  </div>
-
+<!-- Intro -->
+<div id="intro" class="intro" aria-label="イントロ演出">
+  <p id="type-line" class="type-line" aria-live="polite">
+    <span id="type-text"></span><span class="caret" aria-hidden="true"></span>
+  </p>
+</div>
   <!-- GNav + Embers Canvas -->
   <nav class="gnav">
     <div class="wrap gmenu">
@@ -432,82 +457,96 @@
 <!-- ===== Script 1: Intro（ロゴ フェードイン → フェードアウト + BGM） ===== -->
 <script>
   const introEl  = document.getElementById('intro');
-  const logoEl   = document.querySelector('.intro__logo');
+  const typeEl   = document.getElementById('type-text');
+  const lineEl   = document.getElementById('type-line');
   let introDone  = false;
 
-  // ===== BGM =====
+  // ===== BGMそのまま流用 =====
   let bgmStarted = false;
   function playBGM() {
     if (bgmStarted) return;
     const el = document.getElementById('bgm');
     if (!el) return;
-
     const fadeIn = () => {
       try { el.volume = 0; } catch {}
       el.muted = false;
       const step = () => {
-        if (el.volume < 0.6) {
-          el.volume = Math.min(0.6, el.volume + 0.05);
-          requestAnimationFrame(step);
-        }
+        if (el.volume < 0.6) { el.volume = Math.min(0.6, el.volume + 0.05); requestAnimationFrame(step); }
       };
       requestAnimationFrame(step);
     };
-
-    el.play().then(() => {
-      bgmStarted = true;
-      fadeIn();
+    el.play().then(()=>{ bgmStarted = true; fadeIn();
       const btn = document.getElementById('sound-toggle');
-      if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
-    }).catch(() => {
-      const tryOnUser = () => {
-        el.play().then(() => {
-          bgmStarted = true;
-          fadeIn();
-          const btn = document.getElementById('sound-toggle');
-          if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
-          ['click','touchstart','keydown'].forEach(ev => window.removeEventListener(ev, tryOnUser));
-        }).catch(()=>{});
-      };
-      ['click','touchstart','keydown'].forEach(ev => window.addEventListener(ev, tryOnUser, { once:true, passive:true }));
+      if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+    }).catch(()=>{ /* ブロック時は次の操作で再試行（既存と同様の簡略版） */
+      const retry = () => el.play().then(()=>{ bgmStarted=true; fadeIn();
+        const btn=document.getElementById('sound-toggle'); if(btn){btn.textContent='SOUND: ON';btn.setAttribute('aria-pressed','true');}
+        ['click','touchstart','keydown'].forEach(ev=>window.removeEventListener(ev,retry));
+      });
+      ['click','touchstart','keydown'].forEach(ev=>window.addEventListener(ev,retry,{once:true,passive:true}));
     });
   }
 
   function hideIntroOnce(){
     if (introDone || !introEl) return;
     introDone = true;
-    introEl.classList.add('is-hide');          // CSSの .intro.is-hide { opacity:0; transition:1200ms } が効く
-    setTimeout(()=> introEl.classList.add('is-gone'), 1200); // 完全に外す
-
-    // 退場と同時にBGMスタート
-    playBGM();
+    introEl.classList.add('is-hide');              // 既存のフェードアウト（CSSにあるやつ）
+    setTimeout(()=> introEl.classList.add('is-gone'), 1200);
+    playBGM();                                     // 退場と同時にBGM開始
   }
 
-  // ===== イントロ開始 =====
-  function startIntro(){
-    // ヒーロー側のテキスト表示は任意で残す
-    document.getElementById('quote-text')?.classList.add('is-show');
-    document.getElementById('char-info')?.classList.add('is-show');
-
-    // ロゴは CSS の @keyframes introIn（1.6s + 0.2s 遅延）でフェードイン済み
-    // 少し見せてから退場（合計表示時間を調整）
-    const logoInMs = 1600 + 200;   // アニメ時間 + 遅延
-    const holdMs   = 800;          // 見せ時間（お好みで調整）
-    setTimeout(hideIntroOnce, logoInMs + holdMs);
+  // ===== タイピング演出 =====
+  function typeText(target, text, speed = 70){
+    return new Promise(resolve=>{
+      target.textContent = '';
+      let i = 0;
+      const tick = () => {
+        // 一度に1～2文字進めて日本語でもテンポよく
+        const step = (text.charCodeAt(i) > 255) ? 1 : 1;
+        target.textContent += text.slice(i, i + step);
+        i += step;
+        if (i < text.length) setTimeout(tick, speed);
+        else resolve();
+      };
+      tick();
+    });
   }
 
-  // ロード完了で起動（ロゴ画像の読み込み完了に同期）
-  window.addEventListener('load', () => {
-    if (logoEl?.complete) startIntro();
-    else logoEl?.addEventListener('load', startIntro, { once:true });
-  });
+  async function startIntro(){
+    // 低速環境：一気に表示してすぐ退場
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 何か操作されたら強制退場（固まり防止の保険）
+    if (reduce){
+      typeEl.textContent = 'Are you Ready?';
+      setTimeout(hideIntroOnce, 900);
+      return;
+    }
+
+    // 1) 「これが最後の戦いだ─」
+    await typeText(typeEl, 'これが最後の戦いだ─', 72);
+    await new Promise(r=>setTimeout(r, 700));
+
+    // ふっと消す
+    lineEl.classList.add('is-out');
+    await new Promise(r=>setTimeout(r, 280));
+    lineEl.classList.remove('is-out');
+    typeEl.textContent = '';
+
+    // 2) 「Are you Ready？」
+    await typeText(typeEl, 'Are you Ready？', 65);
+    await new Promise(r=>setTimeout(r, 1500));
+
+    // 全体フェードアウト
+    hideIntroOnce();
+  }
+
+  // 起動タイミング
+  window.addEventListener('load', startIntro);
+  // いつものスキップ操作（クリックやキー入力で即退場）
   ['click','wheel','touchstart','keydown'].forEach(ev =>
     window.addEventListener(ev, hideIntroOnce, {passive:true})
   );
-
-  // 8秒フォールバック（演出が失敗しても固まらない）
+  // 万一のフォールバック
   setTimeout(hideIntroOnce, 8000);
 </script>
 
