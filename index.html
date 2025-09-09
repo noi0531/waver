@@ -348,6 +348,23 @@
   to { transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0));
        opacity:0; filter:blur(1px); }
 }
+      /* ==== Quote / Image swap fade（復活用） ==== */
+.swap-fade{
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .35s ease, transform .35s ease;
+  will-change: opacity, transform;
+}
+.swap-fade.swap-hide{
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* 低速環境は即時切替 */
+@media (prefers-reduced-motion: reduce){
+  .swap-fade{ transition: none }
+}
+
   </style>
 </head>
 <body>
@@ -740,7 +757,7 @@ function rotateQuotes(){
   let delay = 6000;
 
   // ちゃま（index=0）だけ +3秒 → 9秒
-  if (qIndex === 0) delay = 15000;
+  if (qIndex === 0) delay = 10000;
 
   qIndex = (qIndex + 1) % quotes.length;
   setTimeout(rotateQuotes, delay);
