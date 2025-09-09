@@ -11,7 +11,12 @@
     img{max-width:100%;height:auto;display:block}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
-
+  .main-logo {
+      width: min(80vw, 520px);
+      margin: 0 auto 40px;
+      display: block;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,.6));
+    }
     /* ===== Intro ===== */
     .intro{position:fixed;inset:0;background:#000;display:grid;place-items:center;z-index:9999}
     .intro__logo{width:min(92vw,1100px);opacity:0;transform:translateY(20px) scale(.96);filter:drop-shadow(0 10px 30px rgba(0,0,0,.6));animation:introIn 1600ms ease forwards 200ms}
@@ -201,16 +206,69 @@
   height: 100%;
   object-fit: cover;
 }
-/* ===== Quote / Image swap fade ===== */
-.swap-fade{
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .35s ease, transform .35s ease;
-  will-change: opacity, transform;
+/* ロゴはヘッダーの中だけで中央配置。固定はしない */
+.main-logo{
+  position: absolute;
+  top: 32%;                 /* ちょい上寄せ：中央=50% → 45% */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(78vw, 640px);
+  z-index: 100;             /* 最前面に固定 */
+  pointer-events: none;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.6));
 }
-.swap-fade.swap-hide{
-  opacity: 0;
-  transform: translateY(6px);
+/* 火の粉を最前面 */
+#fx-embers{
+  position: fixed;
+  inset: 0;
+  z-index: 6;          /* ロゴより上 */
+  pointer-events: none;
+}
+      /* ★ 名言を“少しだけ”上に持ち上げる（ヒーロー全体を上へ） */
+.hero-showcase{
+  margin-top: clamp(80px, 30vh, 210px);
+}
+
+/* ★ ロゴの占有を少しだけ軽くして、名言が上がりやすく */
+.logo-spacer{
+  height: clamp(240px, 46vh, 560px);
+}
+
+/* スマホはロゴ寄せ + 名言上げを少しマイルドに */
+/* スマホはロゴ寄せ + 名言上げを少しマイルドに */
+@media (max-width:768px){
+  .main-logo{ top: 28%; width: min(78vw, 520px); }
+  .hero-showcase{ margin-top: clamp(40px, 12vh, 120px); }
+  .logo-spacer{ height: clamp(200px, 38vh, 480px); }
+} /* ← ← ← ここでちゃんと閉じる！ */
+/* ===== Typing Intro =====  ← ここからはメディアクエリの“外”にあることが重要 */
+.type-line{
+  font-size:clamp(28px, 7vw, 60px);  /* もっと大きく出す */
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-align: center;
+  max-width: min(92vw, 1200px);
+  margin: 0 24px;
+  line-height: 1.3;
+  text-shadow: 0 0 24px rgba(229,9,20,.55);
+  opacity: 1;
+  transition: opacity .5s ease;
+}
+.caret{
+  display:inline-block;
+  width:.6ch; height:1em; transform:translateY(.18em);
+  background:currentColor; opacity:.85; margin-left:.1ch;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{ 50%{ opacity:.15 } }
+.type-line.is-out{ opacity:0 }
+
+/* モバイルだけ別サイズ */
+@media (max-width:768px){
+  .type-line{
+    font-size: clamp(24px, 7vw, 44px);
+    line-height: 1.35;
+  }
 }
 
 /* （任意）テキストは少しだけ遅延で気持ち良く */
@@ -258,34 +316,6 @@
   to { transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0));
        opacity:0; filter:blur(1px); }
 }
-/* ===== Typing Intro ===== */
-.type-line{
-  font-size:clamp(20px,5.2vw,56px);
-  font-weight:900;
-  letter-spacing:.08em;
-  text-align:center;
-  max-width:min(92vw,1100px);
-  margin:0 24px;
-  line-height:1.25;
-  text-shadow:0 0 16px rgba(229,9,20,.35);
-  opacity:1;
-  transition:opacity .5s ease;
-}
-.caret{
-  display:inline-block;
-  width:.6ch; height:1em; transform:translateY(.18em);
-  background:currentColor; opacity:.85; margin-left:.1ch;
-  animation:blink 1s step-end infinite;
-}
-@keyframes blink{ 50%{ opacity:.15 } }
-.type-line.is-out{ opacity:0 }
-
-/* 低速環境配慮 */
-@media (prefers-reduced-motion:reduce){
-  .caret{ animation:none }
-  .type-line{ transition:none }
-}
-
   </style>
 </head>
 <body>
@@ -320,25 +350,27 @@
   border:1px solid rgba(255,255,255,.2); background:rgba(0,0,0,.5);
   color:#fff; padding:10px 12px; border-radius:999px; backdrop-filter:blur(6px);
   font-weight:700; letter-spacing:.06em; cursor:pointer;">SOUND: OFF</button>
-
-  <!-- Header -->
-  <header id="top" class="site-header" role="banner" aria-label="メインビジュアル">
-    <div class="site-header__inner wrap">
-      <div class="hero-showcase">
-        <div class="quote-area">
-          <p class="quote-text swap-fade" id="quote-text">―― 名言がここに流れます ――</p>
-        </div>
-        <div class="char-info" id="char-info">
-          <img class="char-img swap-fade" src="assets/char-1.jpg" alt="キャラ1">
-          <div class="char-meta">
-            <h3 class="char-name">キャラ名1</h3>
-            <p class="char-cv">CV. 演者名1</p>
-            <p class="char-desc">キャラの設定詳細をここに記載します。性格や役割など。</p>
-          </div>
+<!-- Header -->
+<header id="top" class="site-header" role="banner" aria-label="メインビジュアル">
+  <div class="site-header__inner wrap">
+      <img class="main-logo" src="assets/main-logo.png" alt="WAVER 3">
+  <div class="logo-spacer" aria-hidden="true"></div>  <!-- ★ 追加 -->
+    <div class="hero-showcase">
+      <div class="quote-area">
+        <p class="quote-text swap-fade" id="quote-text">―― 名言がここに流れます ――</p>
+      </div>
+      <div class="char-info" id="char-info">
+        <img class="char-img swap-fade" src="assets/char-1.jpg" alt="キャラ1">
+        <div class="char-meta">
+          <h3 class="char-name">キャラ名1</h3>
+          <p class="char-cv">CV. 演者名1</p>
+          <p class="char-desc">キャラの設定詳細をここに記載します。性格や役割など。</p>
         </div>
       </div>
     </div>
-  </header>
+  </div>
+</header>
+
   <!-- STORY -->
   <section id="story">
     <div class="wrap">
@@ -524,7 +556,7 @@
 
     // 1) 「これが最後の戦いだ─」
     await typeText(typeEl, 'これが最後の戦いだ─', 72);
-    await new Promise(r=>setTimeout(r, 700));
+    await new Promise(r=>setTimeout(r, 1500));
 
     // ふっと消す
     lineEl.classList.add('is-out');
@@ -534,7 +566,7 @@
 
     // 2) 「Are you Ready？」
     await typeText(typeEl, 'Are you Ready？', 65);
-    await new Promise(r=>setTimeout(r, 1500));
+    await new Promise(r=>setTimeout(r, 2000));
 
     // 全体フェードアウト
     hideIntroOnce();
@@ -558,7 +590,6 @@
       if(e.isIntersecting){
         e.target.classList.add('is-in');
         io.unobserve(e.target);
-        if(e.target.classList.contains('bh-target')) sprinkleHoles(e.target);
       }
     });
   },{threshold:.08});
@@ -665,7 +696,6 @@ function showQuote(i){
       requestAnimationFrame(()=>{
         qt.classList.remove('swap-hide');
         imgEl.classList.remove('swap-hide');
-        try { sprinkleHoles(qt, {count: 1 + Math.floor(Math.random()*2), radius: 0.22}); } catch(e){}
       });
     }, 180);
   }
