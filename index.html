@@ -429,8 +429,7 @@
       © 2025 WAVER PROJECT. All Rights Reserved.
     </div>
   </footer>
-
-<!-- ===== Script 1: Intro（ガラス割り → フェードアウト + BGM） ===== -->
+<!-- ===== Script 1: Intro（ロゴ フェードイン → フェードアウト + BGM） ===== -->
 <script>
   const introEl  = document.getElementById('intro');
   const logoEl   = document.querySelector('.intro__logo');
@@ -443,7 +442,6 @@
     const el = document.getElementById('bgm');
     if (!el) return;
 
-    // フェードイン
     const fadeIn = () => {
       try { el.volume = 0; } catch {}
       el.muted = false;
@@ -462,7 +460,6 @@
       const btn = document.getElementById('sound-toggle');
       if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
     }).catch(() => {
-      // 自動再生ブロック時：次のユーザー操作で再試行
       const tryOnUser = () => {
         el.play().then(() => {
           bgmStarted = true;
@@ -470,7 +467,7 @@
           const btn = document.getElementById('sound-toggle');
           if (btn) { btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
           ['click','touchstart','keydown'].forEach(ev => window.removeEventListener(ev, tryOnUser));
-        }).catch(()=>{ /* まだブロックなら次の操作で再試行 */ });
+        }).catch(()=>{});
       };
       ['click','touchstart','keydown'].forEach(ev => window.addEventListener(ev, tryOnUser, { once:true, passive:true }));
     });
@@ -479,86 +476,38 @@
   function hideIntroOnce(){
     if (introDone || !introEl) return;
     introDone = true;
-    introEl.classList.add('is-hide');
-    setTimeout(()=> introEl.classList.add('is-gone'), 1200);
-    // 退場と同時にBGM
+    introEl.classList.add('is-hide');          // CSSの .intro.is-hide { opacity:0; transition:1200ms } が効く
+    setTimeout(()=> introEl.classList.add('is-gone'), 1200); // 完全に外す
+
+    // 退場と同時にBGMスタート
     playBGM();
   }
 
-  // ===== ガラス割り（単発） =====
-  function shatterOnce(){
-    const wrap = document.querySelector('.intro__logo-wrap');
-    if(!wrap) return hideIntroOnce();
-
-    // ガラス面
-    const glass = document.createElement('div');
-    glass.className = 'glass';
-    wrap.appendChild(glass);
-
-    // ひび（中央→外周6方向）SVG
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNS,'svg');
-    svg.setAttribute('class','cracks');
-    svg.setAttribute('viewBox','0 0 100 100');
-    svg.setAttribute('preserveAspectRatio','none');
-    const lines = [
-      "M50 50 L50 4",
-      "M50 50 L94 28",
-      "M50 50 L92 82",
-      "M50 50 L8 86",
-      "M50 50 L6 26",
-      "M50 50 L50 96"
-    ];
-    lines.forEach((d,idx)=>{
-      const p = document.createElementNS(svgNS,'path');
-      p.setAttribute('d', d);
-      p.style.setProperty('--len', String(80 + (idx%3)*35));
-      p.style.animationDelay = (idx*40) + 'ms';
-      svg.appendChild(p);
-    });
-    glass.appendChild(svg);
-
-    // 破片を少し飛ばす
-    for(let i=0;i<14;i++){
-      const s = document.createElement('span');
-      s.className = 'shard';
-      const ang  = Math.random()*Math.PI*2;
-      const dist = 90 + Math.random()*140;
-      s.style.setProperty('--tx', Math.cos(ang)*dist + 'px');
-      s.style.setProperty('--ty', Math.sin(ang)*dist + 'px');
-      s.style.setProperty('--rot', (Math.random()*160-80) + 'deg');
-      s.style.animationDelay = (i*12)+'ms';
-      s.style.left = 'calc(50% - 6px)';
-      s.style.top  = 'calc(50% - 12px)';
-      glass.appendChild(s);
-    }
-
-    // 穴＆フラッシュ
-    requestAnimationFrame(()=> glass.classList.add('is-cracked'));
-
-    // 少し見せてからイントロ退場
-    setTimeout(hideIntroOnce, 1100);
-  }
-
-  // ===== イントロ開始（← これが抜けて止まってた） =====
+  // ===== イントロ開始 =====
   function startIntro(){
+    // ヒーロー側のテキスト表示は任意で残す
     document.getElementById('quote-text')?.classList.add('is-show');
     document.getElementById('char-info')?.classList.add('is-show');
-    setTimeout(() => shatterOnce(), 1200); // 単発ガラス割り演出
+
+    // ロゴは CSS の @keyframes introIn（1.6s + 0.2s 遅延）でフェードイン済み
+    // 少し見せてから退場（合計表示時間を調整）
+    const logoInMs = 1600 + 200;   // アニメ時間 + 遅延
+    const holdMs   = 800;          // 見せ時間（お好みで調整）
+    setTimeout(hideIntroOnce, logoInMs + holdMs);
   }
 
-  // ロード完了で起動（ロゴ画像の読み込み状況に対応）
+  // ロード完了で起動（ロゴ画像の読み込み完了に同期）
   window.addEventListener('load', () => {
     if (logoEl?.complete) startIntro();
     else logoEl?.addEventListener('load', startIntro, { once:true });
   });
 
-  // ユーザー操作でも退避できるようにしておく（念のため）
+  // 何か操作されたら強制退場（固まり防止の保険）
   ['click','wheel','touchstart','keydown'].forEach(ev =>
     window.addEventListener(ev, hideIntroOnce, {passive:true})
   );
 
-  // フォールバック（万一演出が失敗しても固まらない）
+  // 8秒フォールバック（演出が失敗しても固まらない）
   setTimeout(hideIntroOnce, 8000);
 </script>
 
