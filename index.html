@@ -740,7 +740,7 @@ function rotateQuotes(){
   let delay = 6000;
 
   // ちゃま（index=0）だけ +3秒 → 9秒
-  if (qIndex === 0) delay = 9000;
+  if (qIndex === 0) delay = 15000;
 
   qIndex = (qIndex + 1) % quotes.length;
   setTimeout(rotateQuotes, delay);
