@@ -4,11 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WAVER 3 | DEAD OR ALIVE</title>
-  <meta name="description" content="WAVER 3 ティザーサイト。黒背景、ロゴ画像挿入、イントロ→フェードアウト、弾痕演出、火の粉（embers）＆スモークの雰囲気演出、NEWS→STORY→CAST→STAFF→GALLERY→WAVER2音声。チケット販売なし。" />
+  <meta name="description" content="WAVER 3 ティザーサイト。黒背景、ロゴ画像挿入、イントロ→フェードアウト、弾痕演出、火の粉（embers）＆スモーク、NEWS→STORY→CAST→STAFF→GALLERY→WAVER2音声。" />
   <style>
-    :root{
-      --accent:#e50914; --ink:#e5e7eb; --line:#23232b;
-    }
+    :root{ --accent:#e50914; --ink:#e5e7eb; --line:#23232b; }
     html,body{margin:0;padding:0;background:#000;color:#fff;font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Yu Gothic"}
     img{max-width:100%;height:auto;display:block}
     a{color:inherit;text-decoration:none}
@@ -20,18 +18,27 @@
     @keyframes introIn{to{opacity:1;transform:translateY(0) scale(1)}}
     .intro.is-hide{opacity:0;transition:opacity 1200ms ease}
     .intro.is-gone{display:none}
+    .intro__logo-wrap{position:relative;display:inline-block;line-height:0;filter:drop-shadow(0 10px 30px rgba(0,0,0,.6))}
+    .intro .bh{position:absolute;width:24px;height:24px;pointer-events:none;opacity:0;transform:scale(.4) rotate(0deg);z-index:10;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.08) 22%, rgba(0,0,0,0) 38%),
+        radial-gradient(circle at 50% 50%, rgba(0,0,0,.95) 16%, rgba(0,0,0,.85) 26%, rgba(90,90,90,.18) 40%, rgba(0,0,0,0) 60%),
+        radial-gradient(circle at 60% 60%, rgba(255,40,20,.28), transparent 30%);
+      border-radius:50%;box-shadow:inset 0 0 6px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);animation:bh-in 420ms cubic-bezier(.2,.7,.2,1) forwards}
+    @keyframes bh-in{to{opacity:1;transform:scale(1) rotate(var(--rot,0deg))}}
+    .intro .bh-smoke{position:absolute;width:140px;height:140px;pointer-events:none;z-index:9;background:radial-gradient(ellipse at 40% 60%, rgba(255,255,255,.10), transparent 60%);filter:blur(5px);opacity:0;transform:translate(-50%,-50%);animation:smoke 1200ms ease forwards}
+    @keyframes smoke{20%{opacity:.4}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
 
     /* ===== Global vibe ===== */
     body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.22;
       background:radial-gradient(1200px 600px at 50% 40%, rgba(255,255,255,.05), transparent 60%),
                  radial-gradient(1000px 500px at 50% 130%, rgba(229,9,20,.08), transparent 60%);
       mix-blend-mode:screen}
-    body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1; background:radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.75));}
+    body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.75))}
 
     /* ===== Header ===== */
     .site-header{position:relative;min-height:100svh;display:grid;place-items:center;background:#000}
     .site-header__inner{position:relative;z-index:2;text-align:center}
-    .hero-logo{width:min(92vw,1100px);filter:drop-shadow(0 18px 50px rgba(0,0,0,.9));opacity:.98}
     .subtitle{font-size:clamp(14px,2.2vw,22px);color:var(--ink);letter-spacing:.35em;margin-top:6px}
 
     /* ===== GNav ===== */
@@ -49,64 +56,42 @@
     .sec__title{font-size:clamp(18px,2.6vw,24px);letter-spacing:.18em}
     .lead{color:var(--ink);line-height:1.9}
 
-    /* ===== News ===== */
+    /* ===== News/Story/Cast… ===== */
     .news{display:grid;gap:14px}
     .news li{list-style:none;border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:12px;padding:16px;display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
     .news time{font-weight:700;letter-spacing:.1em;opacity:.9}
-
-    /* ===== Story ===== */
     .story{display:grid;gap:22px}
     .story .kv{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-
-    /* ===== Cast ===== */
     .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
     .card{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:14px;overflow:hidden}
     .card .ph{aspect-ratio:16/9;background:#0d0d14;display:grid;place-items:center}
     .card .bd{padding:12px 14px}
     .meta{font-size:12px;letter-spacing:.18em;color:var(--ink)}
-/* ===== Staff（元の横並びレイアウト） ===== */
-.credit{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:grid;
-  gap:10px;
-}
-.credit li{
-  display:flex;
-  gap:12px;
-  align-items:baseline;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-  border-radius:12px;
-  padding:12px;
-}
-.credit .role{
-  width:16em;           /* ラベル列は固定幅 */
-  min-width:10em;
-  letter-spacing:.18em;
-  color:var(--ink);
-}
 
-    /* ===== Gallery ===== */
+    /* Staff */
+    .credit{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .credit li{display:flex;gap:12px;align-items:baseline;border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:12px;padding:12px}
+    .credit .role{width:16em;min-width:10em;letter-spacing:.18em;color:var(--ink)}
+
+    /* Gallery */
     .hscroll{display:grid;gap:14px;grid-auto-flow:column;grid-auto-columns:minmax(72vw,460px);overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
     .hscroll>*{scroll-snap-align:start;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0d0d14}
 
-    /* ===== Audio ===== */
+    /* Audio */
     .audio-wrap{display:grid;gap:16px}
     .audio-player{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border-radius:14px;padding:18px}
     .audio-player h3{margin:0 0 6px;letter-spacing:.18em}
     audio{width:100%}
     .cta{display:inline-grid;place-items:center;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(180deg,rgba(229,9,20,.95),rgba(229,9,20,.75));font-weight:900;letter-spacing:.12em}
 
-    /* ===== Footer / Socials ===== */
+    /* Footer */
     footer{border-top:1px solid var(--line);padding:28px 0 60px;color:var(--ink);text-align:center;position:relative;z-index:2}
     .socials{display:flex;gap:16px;justify-content:center;margin:4px 0 12px}
     .socials a{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
     .socials a:hover{background:rgba(255,255,255,.12)}
     .socials svg{width:22px;height:22px;fill:#fff}
 
-    /* ===== Reveal & Bullet Holes ===== */
+    /* Reveal & Bullet Holes (共通) */
     .reveal{opacity:0;transform:translateY(18px);transition:opacity 700ms ease,transform 700ms ease}
     .reveal.is-in{opacity:1;transform:none}
     .bh{position:fixed;width:22px;height:22px;pointer-events:none;opacity:0;transform:scale(.4) rotate(0deg);
@@ -116,206 +101,56 @@
       border-radius:50%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));
       box-shadow: inset 0 0 6px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.05);
       z-index:40;animation:bh-in 420ms cubic-bezier(.2,.7,.2,1) forwards}
-    @keyframes bh-in{to{opacity:1;transform:scale(1) rotate(var(--rot,0deg));}}
     .bh-smoke{position:fixed;width:120px;height:120px;pointer-events:none;background:radial-gradient(ellipse at 40% 60%, rgba(255,255,255,.08), transparent 60%);filter:blur(4px);opacity:0;transform:translate(-50%,-50%);z-index:39;animation:smoke 1200ms ease forwards}
-    @keyframes smoke{20%{opacity:.4}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
 
     @media (prefers-reduced-motion:reduce){.intro__logo{animation:none;opacity:1;transform:none}.reveal{transition:none;opacity:1;transform:none}}
-  
-    /* ===== Hero Character Showcase ===== */
-    .hero-showcase{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
-    .quote-area{flex:1 1 100%;text-align:center;margin-bottom:20px}
-    .quote-text{font-size:clamp(20px,3vw,36px);font-weight:700;letter-spacing:.12em;color:#f5f5f5;text-shadow:0 0 12px rgba(229,9,20,.6)}
-    .char-info{display:flex;gap:20px;align-items:flex-start;max-width:900px;margin:0 auto}
-    .char-img{width:220px;height:auto;border-radius:12px;border:2px solid rgba(255,255,255,.1);object-fit:cover;box-shadow:0 0 20px rgba(0,0,0,.6)}
-    .char-meta{flex:1;min-width:240px}
-    .char-name{font-size:clamp(18px,2.4vw,26px);margin:0 0 6px;font-weight:800}
-    .char-cv{margin:0 0 12px;font-size:14px;color:var(--ink)}
-    .char-desc{font-size:15px;line-height:1.7;color:#ddd}
-  
-    /* ===== Character Showcase Animations ===== */
-    .quote-text,.char-info{opacity:0;transform:translateY(12px);transition:opacity .8s ease,transform .8s ease}
-    .quote-text.is-show,.char-info.is-show{opacity:1;transform:none}
-    .char-info{transition-delay:.15s}
 
-    @media(max-width:768px){
-      .hero-showcase{flex-direction:column;gap:20px}
-      .quote-text{font-size:clamp(22px,6vw,32px);margin-bottom:14px}
-      .char-info{flex-direction:column;align-items:center;text-align:center}
-      .char-img{width:60%;max-width:280px}
-      .char-meta{min-width:unset}
-    }
-  
-    /* ===== Swap (fade/slide) ===== */
-    .swap-fade{transition:opacity 380ms ease, transform 380ms ease}
-    .swap-hide{opacity:0 !important; transform:translateY(10px)}
-    .char-img.swap-hide{transform:translateY(-6px)}
+    /* ===== Hero（左右2カラム＋下段プロフィール） ===== */
+    .hero-showcase{display:grid;grid-template-columns:minmax(280px,1.1fr) minmax(240px,1fr);
+      grid-template-areas:"quote img" "meta img";align-items:center;gap:28px 40px;min-height:clamp(520px,80svh,860px)}
+    .quote-area{grid-area:quote;align-self:end}
+    #quote-text{font-size:clamp(28px,5.8vw,64px);line-height:1.18;letter-spacing:.08em;font-weight:800;text-shadow:0 0 14px rgba(229,9,20,.45)}
+    .char-info{display:contents}
+    .char-img{grid-area:img;justify-self:center;width:min(64vw,640px);max-height:min(78svh,760px);object-fit:cover;border:none;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,.55)}
+    .char-meta{grid-area:meta;align-self:start;max-width:58ch}
+    .char-name{font-size:clamp(20px,2.6vw,30px);margin:4px 0 4px;font-weight:900}
+    .char-cv{margin:0 0 10px;font-size:14px;color:var(--ink);letter-spacing:.06em}
+    .char-desc{font-size:15px;line-height:1.8;color:#ddd}
+    .site-header__inner.wrap{padding-top:60px;padding-bottom:40px}
 
-    /* ===== Mobile layout ===== */
-    @media (max-width: 768px){
-      .hero-showcase{flex-direction:column; gap:20px}
-      .quote-area{order:1}
-      .quote-text{font-size:clamp(22px,6.2vw,34px); line-height:1.4}
-      .char-info{order:2; flex-direction:column; align-items:center; max-width:none}
-      .char-img{width:min(64vw,320px)}
-      .char-meta{text-align:center}
+    /* スマホでも左テキスト/右画像 */
+    @media (max-width:768px){
+      .hero-showcase{grid-template-columns:1fr 1fr;grid-template-areas:"quote img" "meta img";gap:12px 12px;min-height:72svh}
+      #quote-text{font-size:clamp(18px,6.4vw,28px);line-height:1.24}
+      .char-img{width:46vw;max-height:58svh;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.5)}
+      .char-meta{max-width:unset}
     }
 
-/* ===== 調整: CAST のグリッドを中央寄せ（PC/タブレット） ===== */
-@media (min-width: 768px){
-  #cast .grid{
-    /* 1カードの横幅を伸ばさず“列”を可変で組んで、余白は左右に配分 */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
-    justify-content: center; /* 余白を左右に寄せて中央配置 */
-  }
-  #cast .card{ width: 260px; } /* 列幅を固定して整える（可変が良ければ削除OK） */
-}
-/* スマホは従来通りでOK（1列フル幅のまま） */
-      /* ==== Hero を左右2カラム＋下段プロフィールに再レイアウト ==== */
-.hero-showcase{
-  display:grid;
-  grid-template-columns: minmax(280px,1.1fr) minmax(240px,1fr);
-  grid-template-areas:
-    "quote img"
-    "meta  img";
-  align-items:center;
-  gap:28px 40px;
-  min-height:clamp(520px, 80svh, 860px);
-}
+    /* Mobile nav fix */
+    @media (max-width:768px){
+      .gmenu{justify-content:flex-start;gap:10px;padding:10px 12px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .gmenu::-webkit-scrollbar{display:none}
+      .gmenu a{font-size:13px;letter-spacing:.08em;padding:8px 10px;white-space:nowrap;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+      .gmenu a:hover,.gmenu a:focus{background:rgba(255,255,255,.12)}
+      .gmenu .brand{margin-right:0;position:sticky;left:0;z-index:1;background:rgba(255,255,255,.10)}
+      html{scroll-padding-top:56px}
+    }
 
-/* 左上：名言 */
-.quote-area{ grid-area:quote; align-self:end; }
-#quote-text{
-  font-size:clamp(28px,5.8vw,64px);
-  line-height:1.18;
-  letter-spacing:.08em;
-  font-weight:800;
-  text-shadow:0 0 14px rgba(229,9,20,.45);
-}
-
-/* 右列：画像（DOMはそのまま。子要素をグリッドに流し込む） */
-.char-info{ display:contents; }        /* 画像とメタを親から“解放” */
-.char-img{
-  grid-area:img;
-  justify-self:center;
-  width:min(64vw, 640px);
-  max-height:min(78svh, 760px);
-  object-fit:cover;
-  border:none;               /* 枠線OFF */
-  box-shadow:0 18px 60px rgba(0,0,0,.55);
-  border-radius:16px;
-}
-
-/* 左下：名前・CV・説明 */
-.char-meta{ grid-area:meta; align-self:start; max-width:58ch; }
-.char-name{ font-size:clamp(20px,2.6vw,30px); margin:4px 0 4px; font-weight:900; }
-.char-cv{ margin:0 0 10px; font-size:14px; color:var(--ink); letter-spacing:.06em; }
-.char-desc{ font-size:15px; line-height:1.8; color:#ddd; }
-
-/* 余白微調整 */
-.site-header__inner.wrap{ padding-top:60px; padding-bottom:40px; }
-
-/* ===== スマホでも“左テキスト／右画像”を維持 ===== */
-@media (max-width: 768px){
-  .hero-showcase{
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "quote img"
-      "meta  img";
-    gap:12px 12px;
-    min-height:72svh;
-  }
-  #quote-text{ font-size:clamp(18px,6.4vw,28px); line-height:1.24; }
-  .char-img{
-    width:46vw;
-    max-height:58svh;
-    border-radius:14px;
-    box-shadow:0 12px 36px rgba(0,0,0,.5);
-  }
-  .char-meta{ max-width:unset; }
-}
-/* ===== Mobile nav fix (<=768px) ===== */
-@media (max-width: 768px){
-  .gnav{backdrop-filter:saturate(140%) blur(8px);}
-
-  .gmenu{
-    justify-content:flex-start;   /* 左から並べる */
-    gap:10px;
-    padding:10px 12px;
-    flex-wrap:nowrap;             /* 折り返さない＝1行 */
-    overflow-x:auto;              /* 横スクロール */
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  .gmenu::-webkit-scrollbar{display:none;}
-
-  .gmenu a{
-    font-size:13px;               /* ちょい小さく */
-    letter-spacing:.08em;         /* 詰める */
-    padding:8px 10px;             /* ピル間隔をコンパクトに */
-    white-space:nowrap;           /* 1項目を折り返さない */
-    background:rgba(255,255,255,.06); /* 常時うっすら背景でタブ感 */
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .gmenu a:hover,.gmenu a:focus{
-    background:rgba(255,255,255,.12);
-  }
-
-  /* 「WAVER 3」ロゴタブの扱い：左端固定（任意） */
-  .gmenu .brand{
-    margin-right:0;               /* 自動で広がるのを止める */
-    position:sticky; left:0;      /* 左端にピタッ */
-    z-index:1;
-    background:rgba(255,255,255,.10);
-  }
-
-  /* 固定ヘッダー分のアンカーずれ防止（任意） */
-  html{ scroll-padding-top:56px; }
-}
-/* ロゴを“当たり判定の箱”にする */
-.intro__logo-wrap{
-  position: relative;
-  display: inline-block;
-  line-height: 0;
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,.6));
-}
-
-/* 銃痕（イントロ用は最前面に） */
-.intro .bh{
-  position:absolute;      /* ← wrap 内に閉じ込める */
-  width:24px; height:24px;
-  pointer-events:none; opacity:0;
-  transform:scale(.4) rotate(0deg);
-  z-index:10;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.08) 22%, rgba(0,0,0,0) 38%),
-    radial-gradient(circle at 50% 50%, rgba(0,0,0,.95) 16%, rgba(0,0,0,.85) 26%, rgba(90,90,90,.18) 40%, rgba(0,0,0,0) 60%),
-    radial-gradient(circle at 60% 60%, rgba(255,40,20,.28), transparent 30%);
-  border-radius:50%;
-  box-shadow: inset 0 0 6px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.05);
-  animation:bh-in 420ms cubic-bezier(.2,.7,.2,1) forwards;
-}
-@keyframes bh-in{ to{ opacity:1; transform:scale(1) rotate(var(--rot,0deg)); } }
-
-.intro .bh-smoke{
-  position:absolute; width:140px; height:140px;
-  pointer-events:none; z-index:9;
-  background:radial-gradient(ellipse at 40% 60%, rgba(255,255,255,.10), transparent 60%);
-  filter:blur(5px); opacity:0; transform:translate(-50%,-50%);
-  animation:smoke 1200ms ease forwards;
-}
-@keyframes smoke{ 20%{opacity:.4} 100%{opacity:0; transform:translate(-50%,-50%) scale(1.3);} }
-
-/* イントロ全体のフェードアウトは既存の .intro.is-hide でOK */
+    /* CAST grid center (PC/Tablet) */
+    @media (min-width:768px){
+      #cast .grid{grid-template-columns:repeat(auto-fit,minmax(220px,260px));justify-content:center}
+      #cast .card{width:260px}
+    }
   </style>
 </head>
 <body>
-<!-- Intro -->
-<div id="intro" class="intro">
-  <div class="intro__logo-wrap">
-    <img class="intro__logo" src="assets/intro-waver3.png" alt="WAVER 3">
+  <!-- Intro -->
+  <div id="intro" class="intro">
+    <div class="intro__logo-wrap">
+      <!-- 参考画像を assets/intro-waver3.png に置く -->
+      <img class="intro__logo" src="assets/intro-waver3.png" alt="WAVER 3">
+    </div>
   </div>
-</div>
 
   <!-- GNav + Embers Canvas -->
   <nav class="gnav">
@@ -331,7 +166,7 @@
   </nav>
   <canvas id="fx-embers" aria-hidden="true"></canvas>
 
-  <!-- Header (black bg + logo image) -->
+  <!-- Header -->
   <header id="top" class="site-header" role="banner" aria-label="メインビジュアル">
     <div class="site-header__inner wrap">
       <div class="hero-showcase">
@@ -377,49 +212,14 @@
   <section id="cast">
     <div class="wrap">
       <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">CAST</h2></div>
-   <div class="grid">
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-1.jpg" alt="キャスト1" loading="lazy"></div>
-    <div class="bd"><strong>キャスト1</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-2.jpg" alt="キャスト2" loading="lazy"></div>
-    <div class="bd"><strong>キャスト2</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-3.jpg" alt="キャスト3" loading="lazy"></div>
-    <div class="bd"><strong>キャスト3</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-4.jpg" alt="キャスト4" loading="lazy"></div>
-    <div class="bd"><strong>キャスト4</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-5.jpg" alt="キャスト5" loading="lazy"></div>
-    <div class="bd"><strong>キャスト5</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-6.jpg" alt="キャスト6" loading="lazy"></div>
-    <div class="bd"><strong>キャスト6</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-7.jpg" alt="キャスト7" loading="lazy"></div>
-    <div class="bd"><strong>キャスト7</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-8.jpg" alt="キャスト8" loading="lazy"></div>
-    <div class="bd"><strong>キャスト8</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-9.jpg" alt="キャスト9" loading="lazy"></div>
-    <div class="bd"><strong>キャスト9</strong><div class="meta">Cast</div></div>
-  </article>
-  <article class="card reveal">
-    <div class="ph"><img src="assets/cast-10.jpg" alt="キャスト10" loading="lazy"></div>
-    <div class="bd"><strong>キャスト10</strong><div class="meta">Cast</div></div>
-  </article>
-</div>
-
+      <div class="grid">
+        <!-- ダミー -->
+        <article class="card reveal"><div class="ph"><img src="assets/cast-1.jpg" alt="キャスト1" loading="lazy"></div><div class="bd"><strong>キャスト1</strong><div class="meta">Cast</div></div></article>
+        <article class="card reveal"><div class="ph"><img src="assets/cast-2.jpg" alt="キャスト2" loading="lazy"></div><div class="bd"><strong>キャスト2</strong><div class="meta">Cast</div></div></article>
+        <article class="card reveal"><div class="ph"><img src="assets/cast-3.jpg" alt="キャスト3" loading="lazy"></div><div class="bd"><strong>キャスト3</strong><div class="meta">Cast</div></div></article>
+        <article class="card reveal"><div class="ph"><img src="assets/cast-4.jpg" alt="キャスト4" loading="lazy"></div><div class="bd"><strong>キャスト4</strong><div class="meta">Cast</div></div></article>
+        <article class="card reveal"><div class="ph"><img src="assets/cast-5.jpg" alt="キャスト5" loading="lazy"></div><div class="bd"><strong>キャスト5</strong><div class="meta">Cast</div></div></article>
+      </div>
     </div>
   </section>
 
@@ -468,101 +268,171 @@
     </div>
   </section>
 
-  <!-- Footer with Social Logos -->
+  <!-- Footer -->
   <footer>
     <div class="wrap">
       <div class="socials">
-        <a href="#" aria-label="X" title="X">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h4l5 7 5-7h4l-7.5 10L22 21h-4l-6-8-6 8H2l7.6-10L3 3z"/></svg>
-        </a>
-        <a href="#" aria-label="Instagram" title="Instagram">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zm6.75-4.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25z"/></svg>
-        </a>
-        <a href="#" aria-label="WAVE" title="WAVE">
-          <!-- Bold simple W -->
-          <svg viewBox="0 0 64 24" aria-hidden="true"><path d="M2 2h12l6 14 6-14h12l-7 20H42L32 8l-10 14H9z" fill="white"/></svg>
-        </a>
+        <a href="#" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h4l5 7 5-7h4l-7.5 10L22 21h-4l-6-8-6 8H2l7.6-10L3 3z"/></svg></a>
+        <a href="#" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zM18.75 5.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25z"/></svg></a>
+        <a href="#" aria-label="WAVE" title="WAVE"><svg viewBox="0 0 64 24" aria-hidden="true"><path d="M2 2h12l6 14 6-14h12l-7 20H42L32 8l-10 14H9z" fill="white"/></svg></a>
       </div>
       © 2025 WAVER PROJECT. All Rights Reserved.
     </div>
   </footer>
 
+  <!-- ===== Script 1: Intro（フェードイン→連射→フェードアウト） ===== -->
   <script>
-      
-    const io = new IntersectionObserver((ents)=>{
-      ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); if(e.target.classList.contains('bh-target')) sprinkleHoles(e.target); }});
-    },{threshold:.08});
-    document.querySelectorAll('.reveal,.bh-target').forEach(el=>io.observe(el));
+  const introEl  = document.getElementById('intro');
+  const logoEl   = document.querySelector('.intro__logo');
+  let introDone  = false;
 
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(a=> a.addEventListener('click', (e)=>{const id=a.getAttribute('href'); if(id.length>1){e.preventDefault(); document.querySelector(id)?.scrollIntoView({behavior:'smooth'});}}));
+  function hideIntroOnce(){
+    if (introDone || !introEl) return;
+    introDone = true;
+    introEl.classList.add('is-hide');
+    setTimeout(()=> introEl.classList.add('is-gone'), 1200);
+  }
 
-    // Light parallax header
-    const header=document.querySelector('.site-header');
-    window.addEventListener('scroll', ()=>{const y=Math.min(1,scrollY/innerHeight); header.style.transform=`translateY(${y*12}px)`; header.style.filter=`saturate(${1-y*0.2})`;},{passive:true});
+  function shootLogo(target, opts={}){
+    const wrap = target?.closest('.intro__logo-wrap');
+    if(!wrap) return hideIntroOnce();
 
-    // Bullet holes generator
-    function sprinkleHoles(target, opts){
-      const rect = target.getBoundingClientRect();
-      const baseX = rect.left + rect.width/2 + window.scrollX;
-      const baseY = rect.top + rect.height/2 + window.scrollY;
-      const isImg = target.tagName === 'IMG';
-      const count = (typeof opts === 'number') ? opts : (opts && typeof opts.count === 'number') ? opts.count : (isImg ? 12 : 4);
-      const radiusFactor = (opts && typeof opts.radius === 'number') ? opts.radius : (isImg ? 0.42 : 0.35);
-      const makeSmoke = (opts && opts.smoke === false) ? false : true;
-      for(let i=0;i<count;i++){
-        const ang=(Math.random()*Math.PI*2);
-        const r=Math.random()*rect.width*radiusFactor;
-        const x= baseX + Math.cos(ang)*r;
-        const y= baseY + Math.sin(ang)*Math.max(10,rect.height*0.55);
-        const hole=document.createElement('div');
-        hole.className='bh';
-        hole.style.left=(x-11)+'px';
-        hole.style.top=(y-11)+'px';
-        hole.style.setProperty('--rot',(Math.random()*60-30)+'deg');
-        document.body.appendChild(hole);
-        if(makeSmoke){
-          const smoke=document.createElement('div');
-          smoke.className='bh-smoke'; smoke.style.left=x+'px'; smoke.style.top=y+'px'; document.body.appendChild(smoke);
-          setTimeout(()=> smoke.remove(), 1400);
-        }
+    const rect = target.getBoundingClientRect();
+    const count    = opts.count ?? 18;
+    const spread   = opts.spread ?? 0.85;
+    const interval = opts.interval ?? 80;
+    let i = 0;
+
+    function hit(){
+      const rx = (Math.random()-0.5)*2;
+      const ry = (Math.random()-0.5)*2;
+      const bx = rect.width  * 0.5 + rx * rect.width  * spread * 0.5;
+      const by = rect.height * 0.45+ ry * rect.height * spread * 0.45;
+
+      const hole = document.createElement('div');
+      hole.className = 'bh';
+      hole.style.left = (bx - 12) + 'px';
+      hole.style.top  = (by - 12) + 'px';
+      hole.style.setProperty('--rot',(Math.random()*60-30)+'deg');
+      wrap.appendChild(hole);
+
+      const smoke = document.createElement('div');
+      smoke.className = 'bh-smoke';
+      smoke.style.left = bx + 'px';
+      smoke.style.top  = by + 'px';
+      wrap.appendChild(smoke);
+      setTimeout(()=> smoke.remove(), 1400);
+
+      i++;
+      if(i < count){ setTimeout(hit, interval); }
+      else { setTimeout(hideIntroOnce, 600); }
+    }
+    hit();
+  }
+
+  function startIntro(){
+    document.getElementById('quote-text')?.classList.add('is-show');
+    document.getElementById('char-info')?.classList.add('is-show');
+    setTimeout(() => shootLogo(logoEl, { count: 18, spread: 0.85, interval: 80 }), 1400);
+  }
+
+  window.addEventListener('load', () => {
+    if (logoEl?.complete) startIntro();
+    else logoEl?.addEventListener('load', startIntro, { once:true });
+  });
+
+  ['click','wheel','touchstart','keydown'].forEach(ev =>
+    window.addEventListener(ev, hideIntroOnce, {passive:true})
+  );
+
+  setTimeout(hideIntroOnce, 8000);
+  </script>
+
+  <!-- ===== Script 2: 残りの演出＆機能 ===== -->
+  <script>
+  // Reveal on scroll + bullet holes trigger
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+        if(e.target.classList.contains('bh-target')) sprinkleHoles(e.target);
+      }
+    });
+  },{threshold:.08});
+  document.querySelectorAll('.reveal,.bh-target').forEach(el=>io.observe(el));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const id=a.getAttribute('href');
+      if(id.length>1){ e.preventDefault(); document.querySelector(id)?.scrollIntoView({behavior:'smooth'}); }
+    });
+  });
+
+  // Light parallax header
+  const header=document.querySelector('.site-header');
+  window.addEventListener('scroll', ()=>{
+    const y=Math.min(1,scrollY/innerHeight);
+    header.style.transform=`translateY(${y*12}px)`;
+    header.style.filter=`saturate(${1-y*0.2})`;
+  },{passive:true});
+
+  // Bullet holes generator (共通)
+  function sprinkleHoles(target, opts){
+    const rect = target.getBoundingClientRect();
+    const baseX = rect.left + rect.width/2 + window.scrollX;
+    const baseY = rect.top + rect.height/2 + window.scrollY;
+    const isImg = target.tagName === 'IMG';
+    const count = (typeof opts === 'number') ? opts : (opts && typeof opts.count === 'number') ? opts.count : (isImg ? 12 : 4);
+    const radiusFactor = (opts && typeof opts.radius === 'number') ? opts.radius : (isImg ? 0.42 : 0.35);
+    const makeSmoke = (opts && opts.smoke === false) ? false : true;
+    for(let i=0;i<count;i++){
+      const ang=(Math.random()*Math.PI*2);
+      const r=Math.random()*rect.width*radiusFactor;
+      const x= baseX + Math.cos(ang)*r;
+      const y= baseY + Math.sin(ang)*Math.max(10,rect.height*0.55);
+      const hole=document.createElement('div');
+      hole.className='bh';
+      hole.style.left=(x-11)+'px';
+      hole.style.top=(y-11)+'px';
+      hole.style.setProperty('--rot',(Math.random()*60-30)+'deg');
+      document.body.appendChild(hole);
+      if(makeSmoke){
+        const smoke=document.createElement('div');
+        smoke.className='bh-smoke'; smoke.style.left=x+'px'; smoke.style.top=y+'px'; document.body.appendChild(smoke);
+        setTimeout(()=> smoke.remove(), 1400);
       }
     }
+  }
 
-    // Embers FX (site-wide)
-    (function(){
-      const c = document.getElementById('fx-embers');
-      if(!c) return; const dpr = Math.min(2, window.devicePixelRatio||1);
-      const ctx = c.getContext('2d');
-      let W, H, parts=[]; const MAX=90;
-      function resize(){ W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px'; }
-      function spawn(){ if(parts.length>MAX) return; parts.push({ x: Math.random()*W, y: H + Math.random()*H*.2, vx:(Math.random()-.5)*.08*dpr, vy: -(1+Math.random()*1.5)*dpr, life: 80+Math.random()*120, r: 1.2*dpr+Math.random()*1.6*dpr }); }
-      function tick(){ ctx.clearRect(0,0,W,H); const g = ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,Math.max(W,H)*.7); g.addColorStop(0,'rgba(255,255,255,0.01)'); g.addColorStop(1,'rgba(0,0,0,0.0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); for(let i=0;i<3;i++) spawn(); for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.life--; const f=Math.max(0,Math.min(1,p.life/140)); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,120,20,${0.25*f})`; ctx.fill(); ctx.beginPath(); ctx.arc(p.x,p.y,p.r*.5,0,Math.PI*2); ctx.fillStyle=`rgba(255,200,120,${0.35*f})`; ctx.fill(); if(p.life<=0||p.y<-20*dpr) parts.splice(i,1);} requestAnimationFrame(tick);} resize(); tick(); window.addEventListener('resize', resize); })();
-    
+  // Embers FX (site-wide)
+  (function(){
+    const c = document.getElementById('fx-embers');
+    if(!c) return; const dpr = Math.min(2, window.devicePixelRatio||1);
+    const ctx = c.getContext('2d'); let W, H, parts=[]; const MAX=90;
+    function resize(){ W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px'; }
+    function spawn(){ if(parts.length>MAX) return; parts.push({ x: Math.random()*W, y: H + Math.random()*H*.2, vx:(Math.random()-.5)*.08*dpr, vy: -(1+Math.random()*1.5)*dpr, life: 80+Math.random()*120, r: 1.2*dpr+Math.random()*1.6*dpr }); }
+    function tick(){ ctx.clearRect(0,0,W,H);
+      const g = ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,Math.max(W,H)*.7);
+      g.addColorStop(0,'rgba(255,255,255,0.01)'); g.addColorStop(1,'rgba(0,0,0,0.0)');
+      ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      for(let i=0;i<3;i++) spawn();
+      for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.life--; const f=Math.max(0,Math.min(1,p.life/140));
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,120,20,${0.25*f})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*.5,0,Math.PI*2); ctx.fillStyle=`rgba(255,200,120,${0.35*f})`; ctx.fill();
+        if(p.life<=0||p.y<-20*dpr) parts.splice(i,1);
+      }
+      requestAnimationFrame(tick);
+    }
+    resize(); tick(); window.addEventListener('resize', resize);
+  })();
+
   // ===== Character Quotes Rotator =====
   const quotes = [
     {quote:"この物語の主人公は俺らだからよ─", img:"assets/char-1.jpg", name:"ちゃま", cv:"chama", desc:"熱しやすく冷めやすい。背中で語る姿はまさにKING"},
     {quote:"皆となら負ける気はしません─", img:"assets/char-2.jpg", name:"珠来", cv:"Suzuki", desc:"随一の忠誠心。冷静で分析上手なまとめ役"},
-    {quote:"上等。全員消しといてやるよ─", img:"assets/char-3.jpg", name:"るみみん", cv:"neki", desc:"すぐキレるが仲間思い。最強のリードオフマン"},
-    {quote:"全員集中！後のことは後で考えよ─", img:"assets/char-4.jpg", name:"れの", cv:"ayuk", desc:"常時脱力しているが、やるときはやる小さな巨人"},
-    {quote:"ちゃまが作り上げてきた物を随分下に見てるわね─", img:"assets/char-5.jpg", name:"さな", cv:"sachi", desc:"冷静沈着で仲間からの信頼も熱い皆の姉貴"},
-    {quote:"あのバカに伝えて。頂点取れよって─", img:"assets/char-6.jpg", name:"よしの", cv:"hikonyan", desc:"ちゃまを扱える数少ない理解者。憤怒状態に至ると・・"},
-    {quote:"態度がでかい。弱い犬ほどよく吠えるのよ─", img:"assets/char-7.jpg", name:"ねゆ", cv:"Yume", desc:"一騎当千。全員が認める『No2』"},
-    {quote:"簡単です。今回も皆で家族を助けに来た─", img:"assets/char-8.jpg", name:"かの", cv:"sakasa", desc:"皆の縁を結ぶイマドキマフィア"},
-    {quote:"今回は・・・すこし本気だそうか─", img:"assets/char-9.jpg", name:"おで", cv:"rantn", desc:"ド天然だが世界を揺るがす最高戦力"},
-    {quote:"大事なのは諦めねぇ『心』だよ─", img:"assets/char-10.jpg", name:"ころたん", cv:"an", desc:"優しさの権化。皆に愛されし空の支配者"},
-    {quote:"で、でも家族を守らなきゃ・・だから─", img:"assets/char-11.jpg", name:"ほまる", cv:"kiroka", desc:"天真爛漫。鬼でも殺す爆撃隊長。鬼・・？"},
-    {quote:"ずさんな計画で安心したよ─", img:"assets/char-12.jpg", name:"たに", cv:"Q", desc:"史上最高クオリティの『新参者』"},
-
-    // ここから仮の空きスロット（差し替えOK）
-    {quote:"……", img:"assets/char-13.jpg", name:"キャラ13", cv:"CV13", desc:"後日更新"},
-    {quote:"……", img:"assets/char-14.jpg", name:"キャラ14", cv:"CV14", desc:"後日更新"},
-    {quote:"……", img:"assets/char-15.jpg", name:"キャラ15", cv:"CV15", desc:"後日更新"},
-    {quote:"……", img:"assets/char-16.jpg", name:"キャラ16", cv:"CV16", desc:"後日更新"},
-    {quote:"……", img:"assets/char-17.jpg", name:"キャラ17", cv:"CV17", desc:"後日更新"},
-    {quote:"……", img:"assets/char-18.jpg", name:"キャラ18", cv:"CV18", desc:"後日更新"},
-    {quote:"……", img:"assets/char-19.jpg", name:"キャラ19", cv:"CV19", desc:"後日更新"},
-    {quote:"……", img:"assets/char-20.jpg", name:"キャラ20", cv:"CV20", desc:"後日更新"}
+    {quote:"上等。全員消しといてやるよ─", img:"assets/char-3.jpg", name:"るみみん", cv:"neki", desc:"すぐキレるが仲間思い。最強のリードオフマン"}
   ];
   let qIndex = 0;
   function showQuote(i){
@@ -573,15 +443,11 @@
     const cvEl = document.querySelector('#char-info .char-cv');
     const descEl = document.querySelector('#char-info .char-desc');
 
-    // fade out
     qt.classList.add('swap-hide');
     imgEl.classList.add('swap-hide');
 
-    // preload image then swap
     const pre = new Image();
-    pre.onload = apply;
-    pre.onerror = apply;
-    pre.src = q.img;
+    pre.onload = apply; pre.onerror = apply; pre.src = q.img;
 
     function apply(){
       setTimeout(()=>{
@@ -598,12 +464,8 @@
       }, 180);
     }
   }
-  function rotateQuotes(){
-    showQuote(qIndex);
-    qIndex=(qIndex+1)%quotes.length;
-    setTimeout(rotateQuotes,5000);
-  }
+  function rotateQuotes(){ showQuote(qIndex); qIndex=(qIndex+1)%quotes.length; setTimeout(rotateQuotes,5000); }
   if(quotes.length>0) rotateQuotes();
-</script>
+  </script>
 </body>
 </html>
