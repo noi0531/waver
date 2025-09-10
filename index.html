@@ -541,42 +541,65 @@
   let introDone  = false;
 
 // ===== BGM（強制再生＋控えめボリューム） =====
+// ===== PC自動再生のための強化版 =====
 let bgmStarted = false;
+
 function playBGM() {
   if (bgmStarted) return;
-  const el = document.getElementById('bgm');
+
+  const el  = document.getElementById('bgm');
+  const btn = document.getElementById('sound-toggle');
   if (!el) return;
 
-  const targetVolume = 0.28; // 音量ちょい下げ
+  // ポリシー対策：再生直前は必ずミュート＆音量0
+  el.muted  = true;
   el.volume = 0;
 
-  function fadeIn(){
-    el.muted = false;
+  const targetVolume = 0.28;   // ← 音量ちょい控えめ
+  const fadeIn = () => {
+    if (!el) return;
+    // すでに鳴ってたらUIだけ更新
+    if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+    // 可能なら自動でミュート解除してフェードイン
     const step = () => {
-      const v = Math.min(targetVolume, el.volume + 0.02); // ← 上限は targetVolume に
-      el.volume = v;
-      if (v < targetVolume) requestAnimationFrame(step);
+      // 一部ブラウザはミュート解除が効果ないことがある→何度か試行
+      el.muted = false;
+      const next = Math.min(targetVolume, el.volume + 0.02);
+      el.volume = next;
+      if (next < targetVolume) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-  }
+  };
 
-  el.play().then(() => {
+  const tryPlay = () => el.play().then(() => {
     bgmStarted = true;
-    fadeIn();
-    const btn = document.getElementById('sound-toggle');
-    if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+    fadeIn();                 // 成功なら自動で音を上げる
   }).catch(() => {
-    // ブロック時：次のユーザー操作で再試行（PCでも拾える）
-    const retry = () => el.play().then(() => {
-      bgmStarted = true;
-      fadeIn();
-      const btn = document.getElementById('sound-toggle');
-      if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
-      ['click','touchstart','keydown'].forEach(ev => window.removeEventListener(ev, retry));
-    });
-    ['click','touchstart','keydown'].forEach(ev => window.addEventListener(ev, retry, {once:true, passive:true}));
+    // 失敗＝ユーザー操作待ち
+    const wake = () => {
+      el.play().then(() => {
+        bgmStarted = true;
+        fadeIn();
+        off();                // 1回で外す
+      }).catch(()=>{/* まだダメなら次の操作で再試行 */});
+    };
+    const off = () => {
+      ['click','touchstart','keydown','pointerdown','scroll','mousemove']
+        .forEach(ev => window.removeEventListener(ev, wake));
+      document.removeEventListener('visibilitychange', wake);
+    };
+    // PCでも確実に拾えるイベントを広めに
+    ['click','touchstart','keydown','pointerdown','scroll','mousemove']
+      .forEach(ev => window.addEventListener(ev, wake, {once:true, passive:true}));
+    // タブ復帰時にも再試行
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') wake();
+    }, {once:true});
   });
+
+  tryPlay();
 }
+
   function hideIntroOnce(){
     if (introDone || !introEl) return;
     introDone = true;
