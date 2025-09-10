@@ -540,32 +540,43 @@
   const lineEl   = document.getElementById('type-line');
   let introDone  = false;
 
-  // ===== BGMそのまま流用 =====
-  let bgmStarted = false;
-  function playBGM() {
-    if (bgmStarted) return;
-    const el = document.getElementById('bgm');
-    if (!el) return;
-    const fadeIn = () => {
-      try { el.volume = 0; } catch {}
-      el.muted = false;
-      const step = () => {
-        if (el.volume < 0.35) { el.volume = Math.min(0.6, el.volume + 0.05); requestAnimationFrame(step); }
-      };
-      requestAnimationFrame(step);
+// ===== BGM（強制再生＋控えめボリューム） =====
+let bgmStarted = false;
+function playBGM() {
+  if (bgmStarted) return;
+  const el = document.getElementById('bgm');
+  if (!el) return;
+
+  const targetVolume = 0.28; // 音量ちょい下げ
+  el.volume = 0;
+
+  function fadeIn(){
+    el.muted = false;
+    const step = () => {
+      const v = Math.min(targetVolume, el.volume + 0.02); // ← 上限は targetVolume に
+      el.volume = v;
+      if (v < targetVolume) requestAnimationFrame(step);
     };
-    el.play().then(()=>{ bgmStarted = true; fadeIn();
-      const btn = document.getElementById('sound-toggle');
-      if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
-    }).catch(()=>{ /* ブロック時は次の操作で再試行（既存と同様の簡略版） */
-      const retry = () => el.play().then(()=>{ bgmStarted=true; fadeIn();
-        const btn=document.getElementById('sound-toggle'); if(btn){btn.textContent='SOUND: ON';btn.setAttribute('aria-pressed','true');}
-        ['click','touchstart','keydown'].forEach(ev=>window.removeEventListener(ev,retry));
-      });
-      ['click','touchstart','keydown'].forEach(ev=>window.addEventListener(ev,retry,{once:true,passive:true}));
-    });
+    requestAnimationFrame(step);
   }
 
+  el.play().then(() => {
+    bgmStarted = true;
+    fadeIn();
+    const btn = document.getElementById('sound-toggle');
+    if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+  }).catch(() => {
+    // ブロック時：次のユーザー操作で再試行（PCでも拾える）
+    const retry = () => el.play().then(() => {
+      bgmStarted = true;
+      fadeIn();
+      const btn = document.getElementById('sound-toggle');
+      if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
+      ['click','touchstart','keydown'].forEach(ev => window.removeEventListener(ev, retry));
+    });
+    ['click','touchstart','keydown'].forEach(ev => window.addEventListener(ev, retry, {once:true, passive:true}));
+  });
+}
   function hideIntroOnce(){
     if (introDone || !introEl) return;
     introDone = true;
@@ -765,60 +776,25 @@ function rotateQuotes(){
 rotateQuotes();
   // ===== Sound toggle button =====
   (function(){
-const el  = document.getElementById('bgm');
-const btn = document.getElementById('sound-toggle');
+    const btn = document.getElementById('sound-toggle');
+    const el  = document.getElementById('bgm');
+    if(!btn || !el) return;
 
-// 共通音量（控えめ）
-const targetVolume = 0.35;
-el.volume = 0;
-
-// 🎵 強制再生（全デバイス）
-el.play().then(()=>{
-  fadeIn();
-  if (btn) {
-    btn.textContent = 'SOUND: ON';
-    btn.setAttribute('aria-pressed','true');
-  }
-}).catch(()=>{
-  // もしブロックされたら → 次のユーザー操作で再試行
-  const retry = () => el.play().then(()=>{
-    fadeIn();
-    if (btn) {
-      btn.textContent = 'SOUND: ON';
-      btn.setAttribute('aria-pressed','true');
-    }
-    ['click','touchstart','keydown'].forEach(ev=>window.removeEventListener(ev,retry));
-  });
-  ['click','touchstart','keydown'].forEach(ev=>window.addEventListener(ev,retry,{once:true,passive:true}));
-});
-
-// フェードイン処理
-function fadeIn(){
-  el.muted = false;
-  let v = 0;
-  const step = () => {
-    v = Math.min(targetVolume, v + 0.02);
-    el.volume = v;
-    if (v < targetVolume) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-// 🔘 サウンドボタンの切り替え（任意）
-if (btn) {
-  btn.addEventListener('click', () => {
-    if (el.paused) {
-      el.play().then(()=>fadeIn());
-      btn.textContent = 'SOUND: ON';
-      btn.setAttribute('aria-pressed','true');
-    } else {
-      el.pause();
-      btn.textContent = 'SOUND: OFF';
-      btn.setAttribute('aria-pressed','false');
-    }
-  });
-}
-</script>
+    btn.addEventListener('click', () => {
+      if (el.paused) {
+        el.muted = false;
+        el.play().then(()=>{
+          btn.textContent = 'SOUND: ON';
+          btn.setAttribute('aria-pressed','true');
+        }).catch(()=>{/* ブロック時は次のユーザー操作で再試行 */});
+      } else {
+        el.pause();
+        btn.textContent = 'SOUND: OFF';
+        btn.setAttribute('aria-pressed','false');
+      }
+    });
+  })();
+    </script> 
     <!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
 <script>
   // ここに既存の Reveal / Smooth scroll / Quotes rotator などがある
