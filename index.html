@@ -195,6 +195,9 @@
   border-radius: 12px;
   overflow: hidden;
 }
+      #cast .card{ cursor:pointer; transition:transform .2s ease }
+#cast .card:hover{ transform:translateY(-2px) }
+      
 #cast .card .ph {
   aspect-ratio: 3/4;   /* ← 縦長比率に変更（キャラ絵向け） */
   background: #0d0d14;
@@ -450,7 +453,7 @@
       <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">STORY</h2></div>
       <div class="story">
         <figure class="kv reveal"><img src="assets/story.jpg" alt="ストーリーイメージ"></figure>
-        <p class="lead reveal">都市の闇に蠢く“波動”は、すでに臨界を超えていた──。<br>伝説の作戦名〈WAVER〉が再起動する。生還率はゼロに等しい。それでも、選ぶのは“生か死”ではなく“進むか止まるか”。</p>
+        <p class="lead reveal">『世界最強』に狙われた獲物──。<br>CFamigliaは分裂。生還率はゼロに等しい。それでも、選択肢は“生か死”ではなく“進むか止まるか”。抗え。絶望に。</p>
       </div>
     </div>
   </section>
@@ -855,60 +858,7 @@ rotateQuotes();
   })();
     </script> 
     <!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
-<script>
-  // ここに既存の Reveal / Smooth scroll / Quotes rotator などがある
-
-  // ===== Sound toggle button =====
-    // ===== CAST カード自動生成 =====
-// 実カード（画像・名前）があるぶんはここに列挙。残りは Coming Soon で埋めます。
-const famData = [
-  { img: 'assets/cast-1.jpg', name: 'キャラ1', meta: 'ChamaFamiglia' },
-  // 以降、実データが揃い次第ここに追記
-];
-const unpub1Data = []; // 後で差し替え
-const unpub2Data = []; // 後で差し替え
-
-function makeCard({img, name, meta}) {
-  const article = document.createElement('article');
-  article.className = 'card';
-  article.innerHTML = `
-    <div class="ph"><img src="${img}" alt="${name || 'Coming Soon'}"></div>
-    <div class="bd"><strong>${name || 'Coming Soon'}</strong><div class="meta">${meta || ''}</div></div>
-  `;
-  return article;
-}
-
-function fillGrid(gridId, data, targetCount, metaLabel) {
-  const grid = document.getElementById(gridId);
-  if (!grid) return;
-  grid.innerHTML = '';
-  data.slice(0, targetCount).forEach(item => grid.appendChild(makeCard(item)));
-  for (let i = data.length; i < targetCount; i++) {
-    grid.appendChild(makeCard({
-      img: 'assets/comingsoon.jpg',
-      name: 'Coming Soon',
-      meta: metaLabel
-    }));
-  }
-}
-
-// 所定人数で埋める
-fillGrid('fam-grid',   famData,   12, 'ChamaFamiglia');
-fillGrid('unpub1-grid',unpub1Data, 8, '未公開');
-fillGrid('unpub2-grid',unpub2Data,10, '未公開');
-
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    document.querySelectorAll('.cast-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById(tab).classList.add('active');
-  });
-});
-<!-- CAST Detail Modal -->
-</script>
-<!-- CAST Detail Modal（※scriptの外に置く） -->
+<!-- CAST Detail Modal（※scriptの外、HTMLとして置く） -->
 <div id="cast-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
   <div class="modal__backdrop" data-close></div>
   <div class="modal__panel" role="document">
@@ -929,141 +879,141 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     <audio id="m-audio" preload="none"></audio>
   </div>
 </div>
+    <script>
+// 名前衝突を避けるためにIIFEでスコープを閉じる
+(() => {
+  // DOMが揃ってから実行
+  document.addEventListener('DOMContentLoaded', () => {
 
-<!-- CAST: カード生成 + モーダル制御（これ1本だけ残す） -->
-<script>
-// ===== CAST データ =====
-const famData = [
-  {
-    img: 'assets/cast-1.jpg',
-    name: 'ちゃま',
-    content: 'YouTube配信（ゲーム/雑談）',
-    time: '毎週 金曜 21:00-',
-    message: 'この物語の主人公は俺らだからよ─',
-    url: 'https://example.com/chama',
-    audio: 'assets/voice-chama.mp3'
-  },
-  // ここに追加していけばOK
-];
-const unpub1Data = [];
-const unpub2Data = [];
+    // ===== データ =====
+    const famData = [
+      {
+        img: 'assets/cast-1.jpg',
+        name: 'ちゃま',
+        content: 'YouTube配信（ゲーム/雑談）',
+        time: '毎週 金曜 21:00-',
+        message: 'この物語の主人公は俺らだからよ─',
+        url: 'https://example.com/chama',
+        audio: 'assets/voice-chama.mp3'
+      },
+      // ここに追加
+    ];
+    const unpub1Data = [];
+    const unpub2Data = [];
 
-// ===== カード生成（クリックでモーダル） =====
-function makeCard(data) {
-  const {img, name} = data;
-  const article = document.createElement('article');
-  article.className = 'card';
-  article.innerHTML = `
-    <div class="ph"><img src="${img || 'assets/comingsoon.jpg'}" alt="${name || 'Coming Soon'}"></div>
-    <div class="bd"><strong>${name || 'Coming Soon'}</strong><div class="meta">${data.meta || ''}</div></div>
-  `;
-  article.addEventListener('click', ()=> openCastModal(data));
-  return article;
-}
+    // ===== UI生成 =====
+    function makeCard(data) {
+      const {img, name} = data;
+      const article = document.createElement('article');
+      article.className = 'card';
+      article.innerHTML = `
+        <div class="ph"><img src="${img || 'assets/comingsoon.jpg'}" alt="${name || 'Coming Soon'}"></div>
+        <div class="bd"><strong>${name || 'Coming Soon'}</strong><div class="meta">${data.meta || ''}</div></div>
+      `;
+      article.addEventListener('click', () => openCastModal(data));
+      return article;
+    }
 
-function fillGrid(gridId, data, targetCount, metaLabel) {
-  const grid = document.getElementById(gridId);
-  if (!grid) return;
-  grid.innerHTML = '';
-  data.slice(0, targetCount).forEach(item => grid.appendChild(makeCard(item)));
-  for (let i = data.length; i < targetCount; i++) {
-    grid.appendChild(makeCard({
-      img: 'assets/comingsoon.jpg',
-      name: 'Coming Soon',
-      meta: metaLabel,
-      content:'', time:'', message:'', url:'', audio:''
-    }));
-  }
-}
+    function fillGrid(gridId, data, targetCount, metaLabel) {
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
+      grid.innerHTML = '';
+      data.slice(0, targetCount).forEach(item => grid.appendChild(makeCard(item)));
+      for (let i = data.length; i < targetCount; i++) {
+        grid.appendChild(makeCard({
+          img: 'assets/comingsoon.jpg',
+          name: 'Coming Soon',
+          meta: metaLabel,
+          content:'', time:'', message:'', url:'', audio:''
+        }));
+      }
+    }
 
-// 初期描画
-fillGrid('fam-grid',   famData,   12, 'ChamaFamiglia');
-fillGrid('unpub1-grid',unpub1Data, 8, '未公開');
-fillGrid('unpub2-grid',unpub2Data,10, '未公開');
+    // 初期描画
+    fillGrid('fam-grid',   famData,   12, 'ChamaFamiglia');
+    fillGrid('unpub1-grid',unpub1Data, 8, '未公開');
+    fillGrid('unpub2-grid',unpub2Data,10, '未公開');
 
-// タブ切替
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    document.querySelectorAll('.cast-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById(tab).classList.add('active');
-  });
-});
+    // タブ切替
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.cast-panel').forEach(p=>p.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+      });
+    });
 
-// ===== モーダル制御 =====
-const modal   = document.getElementById('cast-modal');
-const mImg    = document.getElementById('m-img');
-const mName   = document.getElementById('m-name');
-const mCont   = document.getElementById('m-content');
-const mTime   = document.getElementById('m-time');
-const mMsg    = document.getElementById('m-message');
-const mLink   = document.getElementById('m-link');
-const mAudio  = document.getElementById('m-audio');
-const mBtnAud = document.getElementById('m-audio-btn');
+    // ===== モーダル制御 =====
+    const modal   = document.getElementById('cast-modal');
+    const mImg    = document.getElementById('m-img');
+    const mName   = document.getElementById('m-name');
+    const mCont   = document.getElementById('m-content');
+    const mTime   = document.getElementById('m-time');
+    const mMsg    = document.getElementById('m-message');
+    const mLink   = document.getElementById('m-link');
+    const mAudio  = document.getElementById('m-audio');
+    const mBtnAud = document.getElementById('m-audio-btn');
 
-function openCastModal(data){
-  // 画像・テキスト
-  mImg.src = data.img || 'assets/comingsoon.jpg';
-  mImg.alt = data.name || '';
-  mName.textContent = data.name || 'Coming Soon';
-  mCont.textContent = data.content ? `配信内容：${data.content}` : '';
-  mTime.textContent = data.time ? `配信時間：${data.time}` : '';
-  mMsg.textContent  = data.message || '';
+    function openCastModal(data){
+      mImg.src = data.img || 'assets/comingsoon.jpg';
+      mImg.alt = data.name || '';
+      mName.textContent = data.name || 'Coming Soon';
+      mCont.textContent = data.content ? `配信内容：${data.content}` : '';
+      mTime.textContent = data.time ? `配信時間：${data.time}` : '';
+      mMsg.textContent  = data.message || '';
 
-  // 見に行く
-  if (data.url) {
-    mLink.href = data.url;
-    mLink.classList.remove('btn--disabled');
-    mLink.setAttribute('aria-disabled','false');
-  } else {
-    mLink.href = '#';
-    mLink.classList.add('btn--disabled');
-    mLink.setAttribute('aria-disabled','true');
-  }
+      if (data.url) {
+        mLink.href = data.url;
+        mLink.classList.remove('btn--disabled');
+        mLink.setAttribute('aria-disabled','false');
+      } else {
+        mLink.href = '#';
+        mLink.classList.add('btn--disabled');
+        mLink.setAttribute('aria-disabled','true');
+      }
 
-  // 音声
-  mAudio.pause();
-  mAudio.src = '';
-  mBtnAud.textContent = '音声再生';
-  if (data.audio) {
-    mAudio.src = data.audio;
-    mBtnAud.disabled = false;
-    mBtnAud.classList.remove('btn--disabled');
-  } else {
-    mBtnAud.disabled = true;
-    mBtnAud.classList.add('btn--disabled');
-  }
+      mAudio.pause();
+      mAudio.src = '';
+      mBtnAud.textContent = '音声再生';
+      if (data.audio) {
+        mAudio.src = data.audio;
+        mBtnAud.disabled = false;
+        mBtnAud.classList.remove('btn--disabled');
+      } else {
+        mBtnAud.disabled = true;
+        mBtnAud.classList.add('btn--disabled');
+      }
 
-  modal.classList.add('is-open');
-  modal.setAttribute('aria-hidden','false');
-}
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+    }
 
-function closeCastModal(){
-  mAudio.pause();
-  modal.classList.remove('is-open');
-  modal.setAttribute('aria-hidden','true');
-}
+    function closeCastModal(){
+      mAudio.pause();
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+    }
 
-// 閉じる操作
-modal.addEventListener('click', (e)=>{
-  if (e.target.matches('[data-close], .modal__backdrop')) closeCastModal();
-});
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'Escape' && modal.classList.contains('is-open')) closeCastModal();
-});
+    modal.addEventListener('click', (e)=>{
+      if (e.target.matches('[data-close], .modal__backdrop')) closeCastModal();
+    });
+    document.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeCastModal();
+    });
+    mBtnAud.addEventListener('click', ()=>{
+      if (!mAudio.src) return;
+      if (mAudio.paused) {
+        mAudio.play().then(()=>{ mBtnAud.textContent = '停止'; }).catch(()=>{});
+      } else {
+        mAudio.pause();
+        mBtnAud.textContent = '音声再生';
+      }
+    });
 
-// 音声ボタン
-mBtnAud.addEventListener('click', ()=>{
-  if (!mAudio.src) return;
-  if (mAudio.paused) {
-    mAudio.play().then(()=>{ mBtnAud.textContent = '停止'; }).catch(()=>{});
-  } else {
-    mAudio.pause();
-    mBtnAud.textContent = '音声再生';
-  }
-});
+  }); // DOMContentLoaded
+})();
 </script>
 </body>
 </html>
