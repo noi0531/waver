@@ -157,7 +157,7 @@
       </div>
 
       <div class="relative mb-20">
-        <div class="big-word">KUROGEN</div>
+        <div class="big-word">NAGI</div>
         <div class="grid lg:grid-cols-[1.25fr_0.75fr] gap-8 items-stretch relative z-10">
           <div class="fade-left relative h-[620px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
             <img id="mainMenuImage" src="" alt="" class="absolute inset-0 w-full h-full object-cover transition duration-700">
@@ -188,21 +188,27 @@
       </div>
 
       <div class="grid md:grid-cols-2 gap-10">
-        <div class="fade-left bg-black border border-white/10 rounded-[2rem] p-8">
-          <div class="flex items-center justify-between mb-8">
-            <h4 class="text-3xl font-bold" data-ja="メニュー表" data-en="Menu">メニュー表</h4>
-            <span class="text-zinc-500">税込価格</span>
-          </div>
-          <div id="priceList" class="space-y-5"></div>
-        </div>
-        <div class="fade-right rounded-[2rem] overflow-hidden border border-white/10 min-h-[500px] bg-cover bg-center relative" style="background-image:url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?q=80&w=1400&auto=format&fit=crop')">
-          <div class="absolute inset-0 bg-black/35"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-8">
-            <p class="text-zinc-300 tracking-[0.35em] text-xs mb-3">COURSE</p>
-            <h4 class="text-4xl font-black mb-3" data-ja="小さな名店のコース" data-en="Signature Course">小さな名店のコース</h4>
-            <p class="text-zinc-300 leading-relaxed" data-ja="記念日・接待・少人数の特別な夜にも対応。" data-en="Perfect for anniversaries, business dinners and special nights.">記念日・接待・少人数の特別な夜にも対応。</p>
-          </div>
-        </div>
+      <div class="fade-left border border-white/10 rounded-[2rem] overflow-hidden">
+  <button
+    onclick="toggleMenuTable()"
+    class="w-full flex items-center justify-between px-8 py-7 bg-black hover:bg-zinc-900 transition"
+  >
+    <div class="text-left">
+      <p class="text-zinc-500 text-xs tracking-[0.3em] mb-2">MENU LIST</p>
+      <h4 class="text-3xl font-bold">メニュー表</h4>
+    </div>
+
+    <span id="menuToggleIcon" class="text-3xl">+</span>
+  </button>
+
+  <div id="menuTableWrap" class="hidden bg-black px-8 pb-8">
+    <div class="flex items-center justify-between mb-8">
+      <span class="text-zinc-500">税込価格</span>
+    </div>
+
+    <div id="priceList" class="space-y-5"></div>
+  </div>
+</div>
       </div>
     </div>
   </section>
@@ -239,21 +245,38 @@
     </div>
   </section>
 
-  <section id="allergy" class="py-28 bg-zinc-950 px-6">
-    <div class="max-w-5xl mx-auto">
-      <div class="fade-up mb-12">
-        <p class="text-zinc-500 tracking-[0.3em] mb-4">ALLERGY</p>
-        <h3 class="text-4xl font-bold" data-ja="アレルギー情報" data-en="Allergy Information">アレルギー情報</h3>
-      </div>
-      <div class="fade-up overflow-hidden rounded-[2rem] border border-white/10 overflow-x-auto">
+  <section id="allergy" class="py-20 bg-zinc-950 px-6">
+  <div class="max-w-5xl mx-auto fade-up">
+
+    <div class="border border-white/10 rounded-[2rem] overflow-hidden">
+      <button
+        onclick="toggleAllergy()"
+        class="w-full flex items-center justify-between px-8 py-7 bg-black hover:bg-zinc-900 transition"
+      >
+        <div class="text-left">
+          <p class="text-zinc-500 text-xs tracking-[0.3em] mb-2">ALLERGY</p>
+          <h3 class="text-3xl font-bold">アレルギー情報</h3>
+        </div>
+
+        <span id="allergyToggleIcon" class="text-3xl">+</span>
+      </button>
+
+      <div id="allergyWrap" class="hidden overflow-x-auto bg-zinc-950">
         <table class="w-full text-left min-w-[620px]">
           <thead class="bg-black text-zinc-300">
-            <tr><th class="p-6">Menu</th><th class="p-6">Allergen</th></tr>
+            <tr>
+              <th class="p-6">Menu</th>
+              <th class="p-6">Allergen</th>
+            </tr>
           </thead>
+
           <tbody id="allergyTable"></tbody>
         </table>
       </div>
     </div>
+
+  </div>
+</section>
   </section>
 
   <section id="access" class="py-28 px-6 border-t border-white/10">
@@ -443,6 +466,25 @@
       { name:'reserve days section exists', passed: !!document.getElementById('reserveDays') }
     ];
     console.table(TEST_CASES);
+    function toggleMenuTable() {
+  const wrap = document.getElementById('menuTableWrap');
+  const icon = document.getElementById('menuToggleIcon');
+
+  wrap.classList.toggle('hidden');
+
+  icon.textContent =
+    wrap.classList.contains('hidden') ? '+' : '−';
+}
+
+function toggleAllergy() {
+  const wrap = document.getElementById('allergyWrap');
+  const icon = document.getElementById('allergyToggleIcon');
+
+  wrap.classList.toggle('hidden');
+
+  icon.textContent =
+    wrap.classList.contains('hidden') ? '+' : '−';
+}
   </script>
 </body>
 </html>
