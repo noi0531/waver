@@ -2,1018 +2,447 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WAVER 3 | DEAD OR ALIVE</title>
-  <meta name="description" content="WAVER 3 ティザーサイト。黒背景、ロゴ画像挿入、イントロ→フェードアウト、弾痕演出、火の粉（embers）＆スモーク、NEWS→STORY→CAST→STAFF→GALLERY→WAVER2音声。" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>焼肉 凪 | 小さな店だから、肉に妥協しない。</title>
+  <meta name="description" content="仕入れ、切り方、火入れ、タレ。細部までこだわった小さな焼肉店。" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{ --accent:#e50914; --ink:#e5e7eb; --line:#23232b; }
-    html,body{margin:0;padding:0;background:#000;color:#fff;font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Yu Gothic"}
-    img{max-width:100%;height:auto;display:block}
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
-  .main-logo {
-      width: min(80vw, 520px);
-      margin: 0 auto 40px;
-      display: block;
-      filter: drop-shadow(0 10px 30px rgba(0,0,0,.6));
+    html { scroll-behavior: smooth; }
+    body { background:#030303; color:#fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+
+    .hero-bg {
+      background-image: linear-gradient(to bottom, rgba(0,0,0,.75), rgba(0,0,0,.45), #030303), url('https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=1800&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      animation: heroZoom 18s ease-in-out infinite;
     }
-    /* ===== Intro ===== */
-    .intro{position:fixed;inset:0;background:#000;display:grid;place-items:center;z-index:9999}
-    .intro__logo{width:min(92vw,1100px);opacity:0;transform:translateY(20px) scale(.96);filter:drop-shadow(0 10px 30px rgba(0,0,0,.6));animation:introIn 1600ms ease forwards 200ms}
-    @keyframes introIn{to{opacity:1;transform:translateY(0) scale(1)}}
-    .intro.is-hide{opacity:0;transition:opacity 1200ms ease}
-    .intro.is-gone{display:none}
-    .intro__logo-wrap{position:relative;display:inline-block;line-height:0;filter:drop-shadow(0 10px 30px rgba(0,0,0,.6))}
-    .intro .bh{position:absolute;width:24px;height:24px;pointer-events:none;opacity:0;transform:scale(.4) rotate(0deg);z-index:10;
+
+    @keyframes heroZoom {
+      0%,100% { transform: scale(1.08); }
+      50% { transform: scale(1.01); }
+    }
+
+    .fade-up { opacity:0; transform: translateY(42px); transition: .9s ease; }
+    .fade-left { opacity:0; transform: translateX(-48px); transition: .9s ease; }
+    .fade-right { opacity:0; transform: translateX(48px); transition: .9s ease; }
+    .show { opacity:1; transform: translate(0,0); }
+
+    .smoke {
+      position:absolute;
+      left:-20%; bottom:0;
+      width:150%; height:280px;
+      opacity:.28;
+      filter: blur(24px);
       background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.08) 22%, rgba(0,0,0,0) 38%),
-        radial-gradient(circle at 50% 50%, rgba(0,0,0,.95) 16%, rgba(0,0,0,.85) 26%, rgba(90,90,90,.18) 40%, rgba(0,0,0,0) 60%),
-        radial-gradient(circle at 60% 60%, rgba(255,40,20,.28), transparent 30%);
-      border-radius:50%;box-shadow:inset 0 0 6px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);animation:bh-in 420ms cubic-bezier(.2,.7,.2,1) forwards}
-    @keyframes bh-in{to{opacity:1;transform:scale(1) rotate(var(--rot,0deg))}}
-    .intro .bh-smoke{position:absolute;width:140px;height:140px;pointer-events:none;z-index:9;background:radial-gradient(ellipse at 40% 60%, rgba(255,255,255,.10), transparent 60%);filter:blur(5px);opacity:0;transform:translate(-50%,-50%);animation:smoke 1200ms ease forwards}
-    @keyframes smoke{20%{opacity:.4}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
-
-    /* ===== Global vibe ===== */
-    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.22;
-      background:radial-gradient(1200px 600px at 50% 40%, rgba(255,255,255,.05), transparent 60%),
-                 radial-gradient(1000px 500px at 50% 130%, rgba(229,9,20,.08), transparent 60%);
-      mix-blend-mode:screen}
-    body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.75))}
-
-    /* ===== Header ===== */
-    .site-header{position:relative;min-height:100svh;display:grid;place-items:center;background:#000}
-    .site-header__inner{position:relative;z-index:2;text-align:center}
-    .subtitle{font-size:clamp(14px,2.2vw,22px);color:var(--ink);letter-spacing:.35em;margin-top:6px}
-
-    /* ===== GNav ===== */
-    .gnav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:saturate(140%) blur(8px);background:rgba(8,8,12,.45);border-bottom:1px solid rgba(255,255,255,.08)}
-    .gmenu{display:flex;gap:18px;align-items:center;justify-content:center;padding:14px 16px;flex-wrap:wrap}
-    .gmenu a{font-weight:700;font-size:14px;letter-spacing:.12em;opacity:.9;padding:8px 10px;border-radius:999px}
-    .gmenu a:hover,.gmenu a:focus{background:rgba(255,255,255,.08)}
-    .gmenu .brand{margin-right:auto;font-weight:900;letter-spacing:.18em}
-
-    /* ===== Sections ===== */
-    section{position:relative;z-index:2;padding:72px 0;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0))}
-    section:nth-of-type(even){background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0))}
-    .sec__hd{display:flex;align-items:center;gap:14px;margin:0 0 26px}
-    .sec__hd .bar{width:28px;height:2px;background:var(--accent)}
-    .sec__title{font-size:clamp(18px,2.6vw,24px);letter-spacing:.18em}
-    .lead{color:var(--ink);line-height:1.9}
-
-    /* ===== News/Story/Cast… ===== */
-    .news{display:grid;gap:14px}
-    .news li{list-style:none;border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:12px;padding:16px;display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
-    .news time{font-weight:700;letter-spacing:.1em;opacity:.9}
-    .story{display:grid;gap:22px}
-    .story .kv{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-    .card{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:14px;overflow:hidden}
-    .card .ph{aspect-ratio:16/9;background:#0d0d14;display:grid;place-items:center}
-    .card .bd{padding:12px 14px}
-    .meta{font-size:12px;letter-spacing:.18em;color:var(--ink)}
-
-    /* Staff */
-    .credit{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-    .credit li{display:flex;gap:12px;align-items:baseline;border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:12px;padding:12px}
-    .credit .role{width:16em;min-width:10em;letter-spacing:.18em;color:var(--ink)}
-
-    /* Gallery */
-    .hscroll{display:grid;gap:14px;grid-auto-flow:column;grid-auto-columns:minmax(72vw,460px);overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
-    .hscroll>*{scroll-snap-align:start;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0d0d14}
-
-    /* Audio */
-    .audio-wrap{display:grid;gap:16px}
-    .audio-player{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border-radius:14px;padding:18px}
-    .audio-player h3{margin:0 0 6px;letter-spacing:.18em}
-    audio{width:100%}
-    .cta{display:inline-grid;place-items:center;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(180deg,rgba(229,9,20,.95),rgba(229,9,20,.75));font-weight:900;letter-spacing:.12em}
-
-    /* Footer */
-    footer{border-top:1px solid var(--line);padding:28px 0 60px;color:var(--ink);text-align:center;position:relative;z-index:2}
-    .socials{display:flex;gap:16px;justify-content:center;margin:4px 0 12px}
-    .socials a{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
-    .socials a:hover{background:rgba(255,255,255,.12)}
-    .socials svg{width:22px;height:22px;fill:#fff}
-
-    /* Reveal & Bullet Holes (共通) */
-    .reveal{opacity:0;transform:translateY(18px);transition:opacity 700ms ease,transform 700ms ease}
-    .reveal.is-in{opacity:1;transform:none}
-    .bh{position:fixed;width:22px;height:22px;pointer-events:none;opacity:0;transform:scale(.4) rotate(0deg);
-      background:
-        radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 20%, rgba(0,0,0,.9) 26%, rgba(120,120,120,.15) 40%, rgba(0,0,0,0) 60%),
-        radial-gradient(circle at 60% 60%, rgba(255,0,0,.35), transparent 30%);
-      border-radius:50%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));
-      box-shadow: inset 0 0 6px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.05);
-      z-index:40;animation:bh-in 420ms cubic-bezier(.2,.7,.2,1) forwards}
-    .bh-smoke{position:fixed;width:120px;height:120px;pointer-events:none;background:radial-gradient(ellipse at 40% 60%, rgba(255,255,255,.08), transparent 60%);filter:blur(4px);opacity:0;transform:translate(-50%,-50%);z-index:39;animation:smoke 1200ms ease forwards}
-
-    @media (prefers-reduced-motion:reduce){.intro__logo{animation:none;opacity:1;transform:none}.reveal{transition:none;opacity:1;transform:none}}
-
-    /* ===== Hero（左右2カラム＋下段プロフィール） ===== */
-    .hero-showcase{display:grid;grid-template-columns:minmax(280px,1.1fr) minmax(240px,1fr);
-      grid-template-areas:"quote img" "meta img";align-items:center;gap:28px 40px;min-height:clamp(520px,80svh,860px)}
-    .quote-area{grid-area:quote;align-self:end}
-    #quote-text{font-size:clamp(28px,5.8vw,64px);line-height:1.18;letter-spacing:.08em;font-weight:800;text-shadow:0 0 14px rgba(229,9,20,.45)}
-    .char-info{display:contents}
-    .char-img{grid-area:img;justify-self:center;width:min(64vw,640px);max-height:min(78svh,760px);object-fit:cover;border:none;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,.55)}
-    .char-meta{grid-area:meta;align-self:start;max-width:58ch}
-    .char-name{font-size:clamp(20px,2.6vw,30px);margin:4px 0 4px;font-weight:900}
-    .char-cv{margin:0 0 10px;font-size:14px;color:var(--ink);letter-spacing:.06em}
-    .char-desc{font-size:15px;line-height:1.8;color:#ddd}
-    .site-header__inner.wrap{padding-top:60px;padding-bottom:40px}
-
-    /* スマホでも左テキスト/右画像 */
-    @media (max-width:768px){
-      .hero-showcase{grid-template-columns:1fr 1fr;grid-template-areas:"quote img" "meta img";gap:12px 12px;min-height:72svh}
-      #quote-text{font-size:clamp(18px,6.4vw,28px);line-height:1.24}
-      .char-img{width:46vw;max-height:58svh;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.5)}
-      .char-meta{max-width:unset}
+        radial-gradient(circle at 20% 60%, rgba(255,255,255,.25), transparent 24%),
+        radial-gradient(circle at 50% 40%, rgba(180,180,180,.18), transparent 28%),
+        radial-gradient(circle at 80% 65%, rgba(255,255,255,.20), transparent 24%);
+      animation: smokeMove 14s ease-in-out infinite;
     }
 
-    /* Mobile nav fix */
-    @media (max-width:768px){
-      .gmenu{justify-content:flex-start;gap:10px;padding:10px 12px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-      .gmenu::-webkit-scrollbar{display:none}
-      .gmenu a{font-size:13px;letter-spacing:.08em;padding:8px 10px;white-space:nowrap;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-      .gmenu a:hover,.gmenu a:focus{background:rgba(255,255,255,.12)}
-      .gmenu .brand{margin-right:0;position:sticky;left:0;z-index:1;background:rgba(255,255,255,.10)}
-      html{scroll-padding-top:56px}
+    @keyframes smokeMove {
+      0%,100% { transform: translateX(-8%) translateY(0); }
+      50% { transform: translateX(3%) translateY(-28px); }
     }
 
-    /* CAST grid center (PC/Tablet) */
-    @media (min-width:768px){
-      #cast .grid{grid-template-columns:repeat(auto-fit,minmax(220px,260px));justify-content:center}
-      #cast .card{width:260px}
+    .loading { animation: loadingOut .7s ease forwards; animation-delay:1.55s; }
+    @keyframes loadingOut { to { opacity:0; visibility:hidden; } }
+
+    .ember { animation: ember 1.15s ease-in-out infinite; }
+    @keyframes ember {
+      0%,100% { transform: scale(1); opacity:.72; }
+      50% { transform: scale(1.13); opacity:1; }
     }
-      /* ===== CAST tabs & panels ===== */
-.cast-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.tab-btn {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.05);
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: .08em;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background .3s;
-}
-.tab-btn.active {
-  background: var(--accent);
-}
-.cast-panels {
-  position: relative;
-}
-.cast-panel {
-  display: none;
-  animation: fadeSlide .6s ease;
-}
-.cast-panel.active {
-  display: block;
-}
-@keyframes fadeSlide {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-      /* CAST cards smaller */
-#cast .grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  justify-content: center;
-}
-#cast .card {
-  width: 180px;  /* ← 小さめに調整 */
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.02);
-  border-radius: 12px;
-  overflow: hidden;
-}
-      #cast .card{ cursor:pointer; transition:transform .2s ease }
-#cast .card:hover{ transform:translateY(-2px) }
-      
-#cast .card .ph {
-  aspect-ratio: 3/4;   /* ← 縦長比率に変更（キャラ絵向け） */
-  background: #0d0d14;
-  display: grid;
-  place-items: center;
-}
-#cast .card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-/* ロゴはヘッダーの中だけで中央配置。固定はしない */
-.main-logo{
-  position: absolute;
-  top: 32%;                 /* ちょい上寄せ：中央=50% → 45% */
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(90vw, 840px);
-  z-index: 100;             /* 最前面に固定 */
-  pointer-events: none;
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,.6));
-}
-/* 火の粉を最前面 */
-#fx-embers{
-  position: fixed;
-  inset: 0;
-  z-index: 6;          /* ロゴより上 */
-  pointer-events: none;
-}
-      /* ★ 名言を“少しだけ”上に持ち上げる（ヒーロー全体を上へ） */
-.hero-showcase{
- margin-top: clamp(100px, 32vh, 230px); /* 数値を少し増やす */
-}
 
-/* ★ ロゴの占有を少しだけ軽くして、名言が上がりやすく */
-.logo-spacer{
-  height: clamp(240px, 46vh, 560px);
-}
+    .marquee { display:flex; width:max-content; animation: marqueeLeft 30s linear infinite; }
+    .marquee-reverse { display:flex; width:max-content; animation: marqueeRight 34s linear infinite; }
+    @keyframes marqueeLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-/* スマホはロゴ寄せ + 名言上げを少しマイルドに */
-/* スマホはロゴ寄せ + 名言上げを少しマイルドに */
-@media (max-width:768px){
-  .main-logo{ top: 28%; width: min(90vw, 520px); }
-  .hero-showcase{ margin-top: clamp(40px, 12vh, 120px); }
-  .logo-spacer{ height: clamp(200px, 38vh, 480px); }
-} /* ← ← ← ここでちゃんと閉じる！ */
-/* ===== Typing Intro =====  ← ここからはメディアクエリの“外”にあることが重要 */
-.type-line{
-  font-size:clamp(28px, 7vw, 60px);  /* もっと大きく出す */
-  font-weight: 900;
-  letter-spacing: .08em;
-  text-align: center;
-  max-width: min(92vw, 1200px);
-  margin: 0 24px;
-  line-height: 1.3;
-  text-shadow: 0 0 24px rgba(229,9,20,.55);
-  opacity: 1;
-  transition: opacity .5s ease;
-}
-.caret{
-  display:inline-block;
-  width:.6ch; height:1em; transform:translateY(.18em);
-  background:currentColor; opacity:.85; margin-left:.1ch;
-  animation:blink 1s step-end infinite;
-}
-@keyframes blink{ 50%{ opacity:.15 } }
-.type-line.is-out{ opacity:0 }
+    .menu-card:hover img { transform: scale(1.1); }
+    .active-thumb { border-color:#fff !important; background:#fff !important; color:#000 !important; }
 
-/* モバイルだけ別サイズ */
-@media (max-width:768px){
-  /* ヒーローは縦並び：名言 → 画像 → プロフィール */
-  .hero-showcase{
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "quote"
-      "img"
-      "meta";
-    gap: 14px;
-    min-height: unset;
-    margin-top: clamp(60px, 14vh, 120px); /* ここで“名言を少し下げる”も実現 */
-  }
+    .big-word {
+      position:absolute;
+      top:-70px; left:0;
+      font-size:18vw;
+      line-height:1;
+      font-weight:900;
+      color:rgba(255,255,255,.028);
+      pointer-events:none;
+      user-select:none;
+      animation: bigWord 14s ease-in-out infinite;
+    }
+    @keyframes bigWord {
+      0%,100% { transform:translateX(-30px); }
+      50% { transform:translateX(10px); }
+    }
 
-  /* 名言テキストを中央寄せ＆読みやすい行間に */
-  #quote-text{
-    font-size: clamp(20px, 7.2vw, 30px);
-    line-height: 1.22;
-    letter-spacing: .06em;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(229,9,20,.35);
-  }
-
-  /* 画像は幅優先でセンター */
-  .char-img{
-    width: min(86vw, 520px);
-    max-height: 52svh;
-    border-radius: 14px;
-    box-shadow: 0 12px 36px rgba(0,0,0,.5);
-    justify-self: center;
-  }
-
-  /* プロフィールも中央寄せ・少し詰める */
-  .char-meta{
-    text-align: center;
-    max-width: 64ch;
-    justify-self: center;
-  }
-}
-
-/* （任意）テキストは少しだけ遅延で気持ち良く */
-#quote-text.swap-fade{ transition-duration: .42s; }
-/* ===== Intro: single glass shatter ===== */
-.intro__logo-wrap{ position:relative; overflow:visible; }
-.glass {
-  position:absolute; inset:-14px; border-radius:14px; pointer-events:none; z-index:12;
-  /* うっすらガラス感（反射） */
-  background:
-    radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.08), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,0));
-  box-shadow: inset 0 0 20px rgba(255,255,255,.06);
-  opacity:.8;
-}
-.glass.is-cracked{
-  /* 中央に穴（透過）を開ける */
-  -webkit-mask: radial-gradient(circle at 50% 52%, transparent 0 24%, #000 26%);
-          mask: radial-gradient(circle at 50% 52%, transparent 0 24%, #000 26%);
-  animation: glassFlash .18s ease-out;
-}
-@keyframes glassFlash { from{ filter:brightness(1.6); } to{ filter:brightness(1); } }
-
-/* ひびSVGを描画して“スッ”と伸びる */
-.cracks{ position:absolute; inset:0; }
-.cracks path{
-  stroke: rgba(255,255,255,.9);
-  stroke-width:1.2; stroke-linecap:round;
-  stroke-dasharray: var(--len,100); stroke-dashoffset: var(--len,100);
-  filter: drop-shadow(0 0 6px rgba(255,255,255,.35));
-  animation: crackDraw .7s cubic-bezier(.2,.8,.2,1) forwards;
-}
-@keyframes crackDraw { to{ stroke-dashoffset:0; } }
-
-/* 飛び散る破片 */
-.shard{
-  position:absolute; width:12px; height:24px; left:50%; top:50%;
-  background: linear-gradient(#dfe4ea, rgba(255,255,255,0));
-  border: 1px solid rgba(255,255,255,.25);
-  border-bottom:none; opacity:1; transform-origin:6px 20px;
-  clip-path: polygon(50% 0, 100% 70%, 50% 100%, 0 70%);
-  animation: flyShards .9s ease-out forwards;
-}
-@keyframes flyShards {
-  to { transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0));
-       opacity:0; filter:blur(1px); }
-}
-      /* ==== Quote / Image swap fade（復活用） ==== */
-.swap-fade{
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .35s ease, transform .35s ease;
-  will-change: opacity, transform;
-}
-.swap-fade.swap-hide{
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-/* 低速環境は即時切替 */
-@media (prefers-reduced-motion: reduce){
-  .swap-fade{ transition: none }
-}
-/* ===== Modal ===== */
-.modal{position:fixed;inset:0;display:none;z-index:120}
-.modal.is-open{display:block}
-.modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
-.modal__panel{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(92vw,720px);max-height:80vh;overflow:auto;
-  background:linear-gradient(180deg,rgba(18,18,24,.96),rgba(10,10,14,.96));
-  border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.6)
-}
-.modal__close{
-  position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.4);color:#fff;font-size:20px;cursor:pointer
-}
-.modal__head{display:flex;gap:14px;align-items:center;margin-bottom:10px}
-.modal__img{width:120px;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
-.modal__name{font-size:20px;letter-spacing:.08em;margin:0 0 4px}
-.modal__meta{color:var(--ink);margin:.1em 0;font-size:14px}
-.modal__msg{margin:14px 0 18px;line-height:1.8}
-.modal__actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{
-  display:inline-grid;place-items:center;padding:10px 16px;border-radius:10px;
-  border:1px solid rgba(255,255,255,.2);background:var(--accent);font-weight:800;letter-spacing:.06em
-}
-.btn--hollow{background:transparent}
-.btn--disabled{opacity:.5;pointer-events:none;filter:grayscale(40%)}
-
+    .line-clamp-1 {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
   </style>
 </head>
 <body>
-<!-- Intro -->
-<div id="intro" class="intro" aria-label="イントロ演出">
-  <p id="type-line" class="type-line" aria-live="polite">
-    <span id="type-text"></span><span class="caret" aria-hidden="true"></span>
-  </p>
-</div>
-  <!-- GNav + Embers Canvas -->
-  <nav class="gnav">
-    <div class="wrap gmenu">
-      <a href="#top" class="brand">WAVER 3</a>
-      <a href="#news">NEWS</a>
-      <a href="#story">STORY</a>
-      <a href="#cast">CAST</a>
-      <a href="#staff">STAFF</a>
-      <a href="#gallery">GALLERY</a>
-      <a href="#audio">WAVER2（音声）</a>
-    </div>
-  </nav>
-  <canvas id="fx-embers" aria-hidden="true"></canvas>
-<!-- BGM（ループ・事前読み込み・初期ミュート） -->
-<audio id="bgm" preload="auto" loop muted>
-  <source src="assets/theme.mp4" type="audio/mp4">
-</audio>
-<!-- サウンド切替ボタン（任意。UI欲しければ） -->
-<button id="sound-toggle" aria-pressed="false" aria-label="サウンドON/OFF" style="
-  position:fixed; right:16px; bottom:16px; z-index:60;
-  border:1px solid rgba(255,255,255,.2); background:rgba(0,0,0,.5);
-  color:#fff; padding:10px 12px; border-radius:999px; backdrop-filter:blur(6px);
-  font-weight:700; letter-spacing:.06em; cursor:pointer;">SOUND: OFF</button>
-<!-- Header -->
-<header id="top" class="site-header" role="banner" aria-label="メインビジュアル">
-  <div class="site-header__inner wrap">
-      <img class="main-logo" src="assets/main-logo.png" alt="WAVER 3">
-  <div class="logo-spacer" aria-hidden="true"></div>  <!-- ★ 追加 -->
-    <div class="hero-showcase">
-      <div class="quote-area">
-        <p class="quote-text swap-fade" id="quote-text">―― 名言がここに流れます ――</p>
-      </div>
-      <div class="char-info" id="char-info">
-        <img class="char-img swap-fade" src="assets/char-1.jpg" alt="キャラ1">
-        <div class="char-meta">
-          <h3 class="char-name">キャラ名1</h3>
-          <p class="char-cv">CV. 演者名1</p>
-          <p class="char-desc">キャラの設定詳細をここに記載します。性格や役割など。</p>
-        </div>
-      </div>
+  <div class="loading fixed inset-0 z-[999] bg-black flex items-center justify-center">
+    <div class="text-center">
+      <div class="ember w-20 h-20 mx-auto mb-8 rounded-full border border-red-900/50 bg-gradient-to-br from-red-950 via-orange-900 to-black shadow-[0_0_60px_rgba(185,28,28,0.55)]"></div>
+      <p class="tracking-[0.6em] text-zinc-500 text-xs mb-3">YAKINIKU</p>
+      <h1 class="text-3xl font-black tracking-widest">凪</h1>
+      <p class="text-zinc-500 mt-4 text-sm">火入れ中...</p>
     </div>
   </div>
-</header>
 
-  <!-- STORY -->
-  <section id="story">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">STORY</h2></div>
-      <div class="story">
-        <figure class="kv reveal"><img src="assets/story.jpg" alt="ストーリーイメージ"></figure>
-        <p class="lead reveal">『世界最強』に狙われた獲物──。<br>CFamigliaは分裂。生還率はゼロに等しい。それでも、選択肢は“生か死”ではなく“進むか止まるか”。抗え。絶望に。</p>
-      </div>
-    </div>
-  </section>
-    
-    <section id="theme">
-  <div class="wrap">
-    <div class="sec__hd reveal"><span class="bar"></span><h2 class="sec__title">THEME SONG</h2></div>
-    <p class="lead reveal">主題歌「スクランブル」 — SPYAIR   作詞：MOMIKEN 作曲：UZ。</p>
-  </div>
-</section>
-
-<!-- CAST -->
-<section id="cast">
-  <div class="wrap">
-    <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">CAST</h2></div>
-
-    <!-- Tabs -->
-    <div class="cast-tabs">
-      <button class="tab-btn active" data-tab="fam">ChamaFamiglia</button>
-      <button class="tab-btn" data-tab="unpub1">未公開</button>
-      <button class="tab-btn" data-tab="unpub2">未公開</button>
-    </div>
-
-    <!-- Panels -->
-    <div class="cast-panels">
-      <!-- それぞれのパネルは空のグリッドだけ用意。中身はJSで所定人数ぶん自動生成します -->
-      <div class="cast-panel active" id="fam">
-        <div class="grid" id="fam-grid"></div>
-      </div>
-
-      <div class="cast-panel" id="unpub1">
-        <div class="grid" id="unpub1-grid"></div>
-      </div>
-
-      <div class="cast-panel" id="unpub2">
-        <div class="grid" id="unpub2-grid"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-  <!-- STAFF -->
-  <section id="staff">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">STAFF</h2></div>
-      <ul class="credit">
-        <li class="reveal"><strong class="role">監督</strong><span>Chama</span></li>
-        <li class="reveal"><strong class="role">監修</strong><span>Suzuki</span></li>
-        <li class="reveal"><strong class="role">脚本</strong><span>Chama</span></li>
-        <li class="reveal"><strong class="role">制作</strong><span>Suzuki</span></li>
-        <li class="reveal"><strong class="role">キャラクターデザイン／総作画監督</strong><span>Chama</span></li>
-      </ul>
-    </div>
-  </section>
-     <!-- NEWS -->
-  <section id="news">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">NEWS</h2></div>
-      <ul class="news">
-        <li class="reveal"><time datetime="2025-09-01">2025.09.01</time><div>特設サイト公開。ティザービジュアルを解禁しました。</div></li>
-        <li class="reveal"><time datetime="2025-09-05">2025.09.05</time><div>キービジュアル第2弾を公開予定。</div></li>
-        <li class="reveal"><time datetime="2025-09-20">2025.09.20</time><div><a href="#audio">「WAVER2（音声版）」</a>の期間限定公開が決定。</div></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- GALLERY -->
-  <section id="gallery">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">GALLERY</h2></div>
-      <div class="hscroll">
-        <img class="reveal" src="assets/gal-1.jpg" alt="ギャラリー1" loading="lazy">
-        <img class="reveal" src="assets/gal-2.jpg" alt="ギャラリー2" loading="lazy">
-        <img class="reveal" src="assets/gal-3.jpg" alt="ギャラリー3" loading="lazy">
-        <img class="reveal" src="assets/gal-4.jpg" alt="ギャラリー4" loading="lazy">
-      </div>
-    </div>
-  </section>
-
-  <!-- AUDIO -->
-  <section id="audio">
-    <div class="wrap">
-      <div class="sec__hd reveal bh-target"><span class="bar"></span><h2 class="sec__title">WAVER2 はこちらから</h2></div>
-      <div class="audio-wrap">
-        <div class="audio-player reveal">
-          <h3>WAVER2 サウンドエディション</h3>
-          <audio controls preload="metadata">
-            <source src="assets/waver2.mp3" type="audio/mpeg" />
-            <source src="assets/waver2.ogg" type="audio/ogg" />
-            お使いのブラウザは audio タグに対応していません。
-          </audio>
-        </div>
-        <a class="cta reveal" href="assets/waver2.mp3" download>音声をダウンロード</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="wrap">
-      <div class="socials">
-        <a href="#" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h4l5 7 5-7h4l-7.5 10L22 21h-4l-6-8-6 8H2l7.6-10L3 3z"/></svg></a>
-        <a href="#" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zM18.75 5.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25z"/></svg></a>
-        <a href="#" aria-label="WAVE" title="WAVE"><svg viewBox="0 0 64 24" aria-hidden="true"><path d="M2 2h12l6 14 6-14h12l-7 20H42L32 8l-10 14H9z" fill="white"/></svg></a>
-      </div>
-      © 2025 WAVER PROJECT. All Rights Reserved.
-    </div>
-  </footer>
-<!-- ===== Script 1: Intro（ロゴ フェードイン → フェードアウト + BGM） ===== -->
-<script>
-  const introEl  = document.getElementById('intro');
-  const typeEl   = document.getElementById('type-text');
-  const lineEl   = document.getElementById('type-line');
-  let introDone  = false;
-
-// ===== BGM（強制再生＋控えめボリューム） =====
-// ===== PC自動再生のための強化版 =====
-let bgmStarted = false;
-
-function playBGM() {
-  if (bgmStarted) return;
-
-  const el  = document.getElementById('bgm');
-  const btn = document.getElementById('sound-toggle');
-  if (!el) return;
-
-  // ポリシー対策：再生直前は必ずミュート＆音量0
-  el.muted  = true;
-  el.volume = 0;
-
-  const targetVolume = 0.28;   // ← 音量ちょい控えめ
-  const fadeIn = () => {
-    if (!el) return;
-    // すでに鳴ってたらUIだけ更新
-    if (btn){ btn.textContent = 'SOUND: ON'; btn.setAttribute('aria-pressed','true'); }
-    // 可能なら自動でミュート解除してフェードイン
-    const step = () => {
-      // 一部ブラウザはミュート解除が効果ないことがある→何度か試行
-      el.muted = false;
-      const next = Math.min(targetVolume, el.volume + 0.02);
-      el.volume = next;
-      if (next < targetVolume) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-
-  const tryPlay = () => el.play().then(() => {
-    bgmStarted = true;
-    fadeIn();                 // 成功なら自動で音を上げる
-  }).catch(() => {
-    // 失敗＝ユーザー操作待ち
-    const wake = () => {
-      el.play().then(() => {
-        bgmStarted = true;
-        fadeIn();
-        off();                // 1回で外す
-      }).catch(()=>{/* まだダメなら次の操作で再試行 */});
-    };
-    const off = () => {
-      ['click','touchstart','keydown','pointerdown','scroll','mousemove']
-        .forEach(ev => window.removeEventListener(ev, wake));
-      document.removeEventListener('visibilitychange', wake);
-    };
-    // PCでも確実に拾えるイベントを広めに
-    ['click','touchstart','keydown','pointerdown','scroll','mousemove']
-      .forEach(ev => window.addEventListener(ev, wake, {once:true, passive:true}));
-    // タブ復帰時にも再試行
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') wake();
-    }, {once:true});
-  });
-
-  tryPlay();
-}
-
-  function hideIntroOnce(){
-    if (introDone || !introEl) return;
-    introDone = true;
-    introEl.classList.add('is-hide');              // 既存のフェードアウト（CSSにあるやつ）
-    setTimeout(()=> introEl.classList.add('is-gone'), 1200);
-    playBGM();                                     // 退場と同時にBGM開始
-  }
-
-  // ===== タイピング演出 =====
-  function typeText(target, text, speed = 70){
-    return new Promise(resolve=>{
-      target.textContent = '';
-      let i = 0;
-      const tick = () => {
-        // 一度に1～2文字進めて日本語でもテンポよく
-        const step = (text.charCodeAt(i) > 255) ? 1 : 1;
-        target.textContent += text.slice(i, i + step);
-        i += step;
-        if (i < text.length) setTimeout(tick, speed);
-        else resolve();
-      };
-      tick();
-    });
-  }
-
-  async function startIntro(){
-    // 低速環境：一気に表示してすぐ退場
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduce){
-      typeEl.textContent = 'Are you Ready?';
-      setTimeout(hideIntroOnce, 900);
-      return;
-    }
-
-    // 1) 「これが最後の戦いだ─」
-    await typeText(typeEl, 'これが最後の戦いだ─', 72);
-    await new Promise(r=>setTimeout(r, 1500));
-
-    // ふっと消す
-    lineEl.classList.add('is-out');
-    await new Promise(r=>setTimeout(r, 280));
-    lineEl.classList.remove('is-out');
-    typeEl.textContent = '';
-
-    // 2) 「Are you Ready？」
-    await typeText(typeEl, 'Are you Ready？', 65);
-    await new Promise(r=>setTimeout(r, 2000));
-
-    // 全体フェードアウト
-    hideIntroOnce();
-  }
-
-  // 起動タイミング
-  window.addEventListener('load', startIntro);
-  // いつものスキップ操作（クリックやキー入力で即退場）
-  ['click','wheel','touchstart','keydown'].forEach(ev =>
-    window.addEventListener(ev, hideIntroOnce, {passive:true})
-  );
-  // 万一のフォールバック
-  setTimeout(hideIntroOnce, 8000);
-</script>
-
-<!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
-<script>
-  // Reveal on scroll + bullet holes trigger
-  const io = new IntersectionObserver((ents)=>{
-    ents.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('is-in');
-        io.unobserve(e.target);
-      }
-    });
-  },{threshold:.08});
-  document.querySelectorAll('.reveal,.bh-target').forEach(el=>io.observe(el));
-
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click', (e)=>{
-      const id=a.getAttribute('href');
-      if(id.length>1){ e.preventDefault(); document.querySelector(id)?.scrollIntoView({behavior:'smooth'}); }
-    });
-  });
-
-  // Light parallax header
-  const header=document.querySelector('.site-header');
-  window.addEventListener('scroll', ()=>{
-    const y=Math.min(1,scrollY/innerHeight);
-    header.style.transform=`translateY(${y*12}px)`;
-    header.style.filter=`saturate(${1-y*0.2})`;
-  },{passive:true});
-
-  // Bullet holes generator (共通)
-  function sprinkleHoles(target, opts){
-    const rect = target.getBoundingClientRect();
-    const baseX = rect.left + rect.width/2 + window.scrollX;
-    const baseY = rect.top + rect.height/2 + window.scrollY;
-    const isImg = target.tagName === 'IMG';
-    const count = (typeof opts === 'number') ? opts : (opts && typeof opts.count === 'number') ? opts.count : (isImg ? 12 : 4);
-    const radiusFactor = (opts && typeof opts.radius === 'number') ? opts.radius : (isImg ? 0.42 : 0.35);
-    const makeSmoke = (opts && opts.smoke === false) ? false : true;
-    for(let i=0;i<count;i++){
-      const ang=(Math.random()*Math.PI*2);
-      const r=Math.random()*rect.width*radiusFactor;
-      const x= baseX + Math.cos(ang)*r;
-      const y= baseY + Math.sin(ang)*Math.max(10,rect.height*0.55);
-      const hole=document.createElement('div');
-      hole.className='bh';
-      hole.style.left=(x-11)+'px';
-      hole.style.top=(y-11)+'px';
-      hole.style.setProperty('--rot',(Math.random()*60-30)+'deg');
-      document.body.appendChild(hole);
-      if(makeSmoke){
-        const smoke=document.createElement('div');
-        smoke.className='bh-smoke'; smoke.style.left=x+'px'; smoke.style.top=y+'px'; document.body.appendChild(smoke);
-        setTimeout(()=> smoke.remove(), 1400);
-      }
-    }
-  }
-
-  // Embers FX
-  (function(){
-    const c = document.getElementById('fx-embers');
-    if(!c) return; const dpr = Math.min(2, window.devicePixelRatio||1);
-    const ctx = c.getContext('2d'); let W, H, parts=[]; const MAX=90;
-    function resize(){ W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px'; }
-    function spawn(){ if(parts.length>MAX) return; parts.push({ x: Math.random()*W, y: H + Math.random()*H*.2, vx:(Math.random()-.5)*.08*dpr, vy: -(1+Math.random()*1.5)*dpr, life: 80+Math.random()*120, r: 1.2*dpr+Math.random()*1.6*dpr }); }
-    function tick(){ ctx.clearRect(0,0,W,H);
-      const g = ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,Math.max(W,H)*.7);
-      g.addColorStop(0,'rgba(255,255,255,0.01)'); g.addColorStop(1,'rgba(0,0,0,0.0)');
-      ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-      for(let i=0;i<3;i++) spawn();
-      for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.life--; const f=Math.max(0,Math.min(1,p.life/140));
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,120,20,${0.25*f})`; ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*.5,0,Math.PI*2); ctx.fillStyle=`rgba(255,200,120,${0.35*f})`; ctx.fill();
-        if(p.life<=0||p.y<-20*dpr) parts.splice(i,1);
-      }
-      requestAnimationFrame(tick);
-    }
-    resize(); tick(); window.addEventListener('resize', resize);
-  })();
-
-  // ===== Character Quotes Rotator =====
-// ===== Character Quotes Rotator =====
-const quotes = [
-  {quote:"この物語の主人公は俺らだからよ─", img:"assets/char-1.jpg", name:"ちゃま", cv:"chama", desc:"熱しやすく冷めやすい。背中で語る姿はまさにKING"},
-  {quote:"皆となら負ける気はしません─", img:"assets/char-2.jpg", name:"珠来", cv:"Suzuki", desc:"随一の忠誠心。冷静で分析上手なまとめ役"},
-  {quote:"上等。全員消しといてやるよ─", img:"assets/char-3.jpg", name:"るみみん", cv:"neki", desc:"すぐキレるが仲間思い。最強のリードオフマン"},
-     {quote:"大将１人で戦わせていいわけ？─", img:"assets/char-4.jpg", name:"ねゆ", cv:"yume", desc:"まとめ役でありながら最強のNO2"},
-     {quote:"小さな巨人。まだいけるよ─", img:"assets/char-5.jpg", name:"れの", cv:"ayu", desc:"仲間思いでちゃま思いの小さな巨人"},
-         {quote:"まーーたハズレくじか─", img:"assets/char-6.jpg", name:"さな", cv:"sachi", desc:"冷静沈着で最高に頭の切れる皆の姉貴"},
-             {quote:"伝えといてよ。頂点取れよって─", img:"assets/char-7.jpg", name:"よしの", cv:"hiko", desc:"キレると世界を揺るがす最強狙撃手"},
-    {quote:"まぁまぁそんなに警戒しないで─", img:"assets/char-8.jpg", name:"うれい", cv:"ritumaru", desc:"帰ってきた史上最高のリーサルウェポン"},
-    {quote:"流石のかのちゃんでも許せません─", img:"assets/char-9.jpg", name:"かの", cv:"sakasa", desc:"見た目とは裏腹なボムストライカー"},
-    {quote:"所詮カスどもが─", img:"assets/char-10.jpg", name:"ころたん", cv:"an", desc:"楽しむ心で敵を殲滅する空の支配者"},
-    {quote:"そんなに早く折れないでよ─", img:"assets/char-11.jpg", name:"ほまる", cv:"kiroka", desc:"最高火力で空に君臨する皆の太陽"},
-    {quote:"今回は本気をだすよ─", img:"assets/char-12.jpg", name:"おで", cv:"lantan", desc:"ファミリーが誇る最強重戦車"},
-      {quote:"伝えたいことがあるんだ─", img:"assets/char-13.jpg", name:"たに", cv:"Q", desc:"史上最高クオリティの『新参者』"},
-  // …（重複は残しても動作OK。後で整えるならここを調整）
-];
-
-let qIndex = 0;
-
-function showQuote(i){
-  const q = quotes[i];
-  const qt = document.getElementById('quote-text');
-  const imgEl = document.querySelector('#char-info .char-img');
-  const nameEl = document.querySelector('#char-info .char-name');
-  const cvEl = document.querySelector('#char-info .char-cv');
-  const descEl = document.querySelector('#char-info .char-desc');
-
-  qt.classList.add('swap-hide');
-  imgEl.classList.add('swap-hide');
-
-  const pre = new Image();
-  pre.onload = apply; pre.onerror = apply; pre.src = q.img;
-
-  function apply(){
-    setTimeout(()=>{
-      qt.textContent = q.quote;
-      nameEl.textContent = q.name;
-      cvEl.textContent = 'CV.' + q.cv;
-      descEl.textContent = q.desc;
-      if(imgEl.src !== q.img) imgEl.src = q.img;
-      requestAnimationFrame(()=>{
-        qt.classList.remove('swap-hide');
-        imgEl.classList.remove('swap-hide');
-      });
-    }, 180);
-  }
-}
-
-function rotateQuotes(){
-  showQuote(qIndex);
-
-  // デフォルト 6秒（=従来より+1秒）
-  let delay = 6000;
-
-  // ちゃま（index=0）だけ +3秒 → 9秒
-  if (qIndex === 0) delay = 10000;
-
-  qIndex = (qIndex + 1) % quotes.length;
-  setTimeout(rotateQuotes, delay);
-}
-
-// ★ 最後に起動
-rotateQuotes();
-  // ===== Sound toggle button =====
-  (function(){
-    const btn = document.getElementById('sound-toggle');
-    const el  = document.getElementById('bgm');
-    if(!btn || !el) return;
-
-    btn.addEventListener('click', () => {
-      if (el.paused) {
-        el.muted = false;
-        el.play().then(()=>{
-          btn.textContent = 'SOUND: ON';
-          btn.setAttribute('aria-pressed','true');
-        }).catch(()=>{/* ブロック時は次のユーザー操作で再試行 */});
-      } else {
-        el.pause();
-        btn.textContent = 'SOUND: OFF';
-        btn.setAttribute('aria-pressed','false');
-      }
-    });
-  })();
-    </script> 
-    <!-- ===== Script 2: 演出・名言ローテ・サウンドボタン ===== -->
-<!-- CAST Detail Modal（※scriptの外、HTMLとして置く） -->
-<div id="cast-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="modal__backdrop" data-close></div>
-  <div class="modal__panel" role="document">
-    <button class="modal__close" data-close aria-label="閉じる">×</button>
-    <div class="modal__head">
-      <img id="m-img" alt="" class="modal__img">
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/45 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div>
-        <h3 id="m-name" class="modal__name"></h3>
-        <p id="m-content" class="modal__meta"></p>
-        <p id="m-time" class="modal__meta"></p>
+        <p class="text-xs tracking-[0.4em] text-zinc-500">YAKINIKU</p>
+        <h1 class="text-2xl font-bold">焼肉 凪</h1>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-zinc-300">
+        <a href="#menu" class="hover:text-white transition">MENU</a>
+        <a href="#reserve" class="hover:text-white transition">RESERVE</a>
+        <a href="#allergy" class="hover:text-white transition">ALLERGY</a>
+        <a href="#access" class="hover:text-white transition">ACCESS</a>
+        <button id="langBtn" class="border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <div class="hero-bg absolute inset-0"></div>
+    <div class="smoke"></div>
+    <div class="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-black to-transparent"></div>
+
+    <div class="relative z-10 text-center px-6 max-w-4xl fade-up">
+      <p class="tracking-[0.5em] text-zinc-400 mb-5" data-ja="SMALL BUT AUTHENTIC" data-en="SMALL BUT AUTHENTIC">SMALL BUT AUTHENTIC</p>
+      <h2 class="whitespace-pre-line text-5xl md:text-7xl font-black leading-tight mb-8" data-ja="小さな店だから、&#10;肉に妥協しない。" data-en="Small restaurant,&#10;serious yakiniku.">小さな店だから、<br>肉に妥協しない。</h2>
+      <p class="whitespace-pre-line text-zinc-300 text-lg leading-relaxed max-w-2xl mx-auto mb-10" data-ja="仕入れ、切り方、火入れ、タレ。&#10;細部までこだわった、大人のための焼肉店。" data-en="From sourcing to cutting, grilling and sauce.&#10;Every detail is crafted for flavor.">仕入れ、切り方、火入れ、タレ。<br>細部までこだわった、大人のための焼肉店。</p>
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <a href="tel:0000000000" class="px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition" data-ja="電話する" data-en="Call">電話する</a>
+        <a href="#reserve" class="px-8 py-4 border border-white/30 rounded-full hover:bg-white hover:text-black transition" data-ja="空席確認・予約" data-en="Check Seats / Reserve">空席確認・予約</a>
       </div>
     </div>
-    <p id="m-message" class="modal__msg"></p>
-    <div class="modal__actions">
-      <a id="m-link" class="btn btn--disabled" href="#" target="_blank" rel="noopener" aria-disabled="true">見に行く</a>
-      <button id="m-audio-btn" class="btn btn--hollow btn--disabled" disabled>音声再生</button>
+  </section>
+
+  <section class="py-28 px-6 border-t border-white/10 relative overflow-hidden">
+    <div class="absolute -right-40 top-20 w-96 h-96 rounded-full bg-red-950/20 blur-3xl"></div>
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+      <div class="fade-left">
+        <p class="text-zinc-500 tracking-[0.3em] mb-4">CONCEPT</p>
+        <h3 class="text-4xl font-bold mb-8 leading-tight" data-ja="“大量仕入れ”では出せない、&#10;本当に旨い肉を。" data-en="Real flavor that mass sourcing&#10;can never create.">“大量仕入れ”では出せない、<br>本当に旨い肉を。</h3>
+        <div class="space-y-6 text-zinc-300 leading-relaxed">
+          <p data-ja="店主自ら目利きした肉のみを仕入れ。小規模だからこそ、品質に徹底的にこだわっています。" data-en="We carefully select every cut. Because we are small, we can control freshness and quality with precision.">店主自ら目利きした肉のみを仕入れ。小規模だからこそ、品質に徹底的にこだわっています。</p>
+          <p data-ja="部位ごとに変える切り方、厚み、味付け。一皿ごとに“理由のある美味しさ”を追求しています。" data-en="Thickness, cut, seasoning and fire are adjusted by each part of the beef.">部位ごとに変える切り方、厚み、味付け。一皿ごとに“理由のある美味しさ”を追求しています。</p>
+        </div>
+      </div>
+      <div class="fade-right rounded-[2rem] overflow-hidden shadow-2xl border border-white/10">
+        <img src="https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1400&auto=format&fit=crop" class="w-full h-[500px] object-cover hover:scale-105 transition duration-700" alt="焼肉イメージ">
+      </div>
     </div>
-    <audio id="m-audio" preload="none"></audio>
+  </section>
+
+  <section id="menu" class="py-28 bg-zinc-950 overflow-hidden relative">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(127,29,29,0.22),transparent_32%),radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.05),transparent_28%)]"></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="fade-up mb-16 grid lg:grid-cols-[0.8fr_1.2fr] gap-10 items-end">
+        <div>
+          <p class="text-zinc-500 tracking-[0.45em] mb-4">SPECIALTIES</p>
+          <h3 class="text-5xl md:text-7xl font-black leading-none">MENU</h3>
+        </div>
+        <p class="text-zinc-400 leading-relaxed max-w-xl lg:ml-auto" data-ja="名物料理をただ並べるのではなく、写真の余白・横の流れ・大判ビジュアルで“食べに行きたい理由”として見せます。" data-en="A cinematic menu showcase with generous spacing, large food visuals and smooth horizontal movement.">名物料理をただ並べるのではなく、写真の余白・横の流れ・大判ビジュアルで“食べに行きたい理由”として見せます。</p>
+      </div>
+
+      <div class="relative mb-20">
+        <div class="big-word">KUROGEN</div>
+        <div class="grid lg:grid-cols-[1.25fr_0.75fr] gap-8 items-stretch relative z-10">
+          <div class="fade-left relative h-[620px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
+            <img id="mainMenuImage" src="" alt="" class="absolute inset-0 w-full h-full object-cover transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+              <div class="flex items-center gap-4 mb-5">
+                <span class="w-12 h-px bg-white/60"></span>
+                <p id="mainMenuNumber" class="text-zinc-300 tracking-[0.4em] text-xs">SIGNATURE 01</p>
+              </div>
+              <p id="mainMenuEn" class="text-zinc-400 tracking-[0.35em] text-xs mb-3"></p>
+              <h4 id="mainMenuName" class="text-5xl md:text-7xl font-black mb-5 tracking-tight"></h4>
+              <p id="mainMenuDesc" class="text-zinc-300 text-lg leading-relaxed max-w-2xl mb-6"></p>
+              <p id="mainMenuPrice" class="text-3xl font-black"></p>
+            </div>
+          </div>
+          <div id="thumbList" class="fade-right grid grid-cols-2 lg:grid-cols-1 gap-4"></div>
+        </div>
+      </div>
+
+      <div class="space-y-8 mb-24">
+        <div class="overflow-hidden">
+          <div id="marquee1" class="marquee gap-6"></div>
+        </div>
+        <div class="overflow-hidden">
+          <div id="marquee2" class="marquee-reverse gap-6"></div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10">
+        <div class="fade-left bg-black border border-white/10 rounded-[2rem] p-8">
+          <div class="flex items-center justify-between mb-8">
+            <h4 class="text-3xl font-bold" data-ja="メニュー表" data-en="Menu">メニュー表</h4>
+            <span class="text-zinc-500">税込価格</span>
+          </div>
+          <div id="priceList" class="space-y-5"></div>
+        </div>
+        <div class="fade-right rounded-[2rem] overflow-hidden border border-white/10 min-h-[500px] bg-cover bg-center relative" style="background-image:url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?q=80&w=1400&auto=format&fit=crop')">
+          <div class="absolute inset-0 bg-black/35"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8">
+            <p class="text-zinc-300 tracking-[0.35em] text-xs mb-3">COURSE</p>
+            <h4 class="text-4xl font-black mb-3" data-ja="小さな名店のコース" data-en="Signature Course">小さな名店のコース</h4>
+            <p class="text-zinc-300 leading-relaxed" data-ja="記念日・接待・少人数の特別な夜にも対応。" data-en="Perfect for anniversaries, business dinners and special nights.">記念日・接待・少人数の特別な夜にも対応。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reserve" class="py-28 px-6 border-t border-white/10 relative overflow-hidden">
+    <div class="absolute left-1/2 top-10 -translate-x-1/2 w-[700px] h-[260px] bg-red-950/20 rounded-full blur-3xl"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="fade-up">
+        <p class="text-zinc-500 tracking-[0.3em] mb-4">RESERVATION</p>
+        <h3 class="text-4xl font-bold mb-6" data-ja="空席確認・予約" data-en="Check Seats / Reserve">空席確認・予約</h3>
+        <p class="text-zinc-400 leading-relaxed mb-12" data-ja="カレンダーから空席状況をご確認いただけます。ホットペッパー・LINE予約・お電話からご予約可能です。" data-en="Check available seats from the calendar and reserve via Hot Pepper, LINE, or phone.">カレンダーから空席状況をご確認いただけます。ホットペッパー・LINE予約・お電話からご予約可能です。</p>
+      </div>
+      <div id="reserveDays" class="grid md:grid-cols-3 gap-6"></div>
+      <div class="fade-up flex flex-col md:flex-row justify-center gap-4 mt-12">
+        <a href="https://www.hotpepper.jp/" target="_blank" class="px-8 py-4 bg-white text-black rounded-full font-bold hover:scale-105 transition" data-ja="ホットペッパーで予約" data-en="Reserve on Hot Pepper">ホットペッパーで予約</a>
+        <a href="https://line.me/R/ti/p/@your-line-id" target="_blank" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition" data-ja="LINEで予約" data-en="Reserve via LINE">LINEで予約</a>
+        <a href="tel:0000000000" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition" data-ja="電話予約" data-en="Call to Reserve">電話予約</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-28 bg-black px-6 border-t border-white/10">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
+      <div class="fade-left">
+        <p class="text-zinc-500 tracking-[0.3em] mb-4">TIKTOK</p>
+        <h3 class="text-4xl font-bold mb-6">SNS</h3>
+        <p class="text-zinc-400 leading-relaxed" data-ja="焼き台の音、肉の艶、店内の空気感をTikTokで発信。実際の投稿URLに差し替えれば、そのまま埋め込み表示できます。" data-en="Share the sound, shine and atmosphere of the restaurant through TikTok.">焼き台の音、肉の艶、店内の空気感をTikTokで発信。実際の投稿URLに差し替えれば、そのまま埋め込み表示できます。</p>
+      </div>
+      <div class="fade-right rounded-[2rem] border border-white/10 bg-zinc-950 p-4 shadow-2xl">
+        <div class="aspect-[9/16] max-h-[620px] mx-auto overflow-hidden rounded-[1.5rem] bg-black border border-white/10">
+          <iframe title="TikTok embedded player" src="https://www.tiktok.com/player/v1/6718335390845095173" allow="fullscreen" class="w-full h-full"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="allergy" class="py-28 bg-zinc-950 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up mb-12">
+        <p class="text-zinc-500 tracking-[0.3em] mb-4">ALLERGY</p>
+        <h3 class="text-4xl font-bold" data-ja="アレルギー情報" data-en="Allergy Information">アレルギー情報</h3>
+      </div>
+      <div class="fade-up overflow-hidden rounded-[2rem] border border-white/10 overflow-x-auto">
+        <table class="w-full text-left min-w-[620px]">
+          <thead class="bg-black text-zinc-300">
+            <tr><th class="p-6">Menu</th><th class="p-6">Allergen</th></tr>
+          </thead>
+          <tbody id="allergyTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" class="py-28 px-6 border-t border-white/10">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+      <div class="fade-left">
+        <p class="text-zinc-500 tracking-[0.3em] mb-4">ACCESS</p>
+        <h3 class="text-4xl font-bold mb-8" data-ja="店舗情報" data-en="Access">店舗情報</h3>
+        <div class="space-y-5 text-zinc-300 leading-relaxed">
+          <p>〒000-0000 東京都○○区○○ 1-2-3</p>
+          <p>TEL：00-0000-0000</p>
+          <p>営業時間：17:00〜24:00</p>
+          <p>定休日：毎週月曜日</p>
+          <p>席数：18席</p>
+        </div>
+        <div class="flex gap-4 mt-10">
+          <a href="https://instagram.com" target="_blank" class="px-6 py-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition">Instagram</a>
+          <a href="https://tiktok.com" target="_blank" class="px-6 py-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition">TikTok</a>
+        </div>
+      </div>
+      <div class="fade-right overflow-hidden rounded-[2rem] border border-white/10 h-[500px]">
+        <iframe title="map" src="https://maps.google.com/maps?q=tokyo&t=&z=13&ie=UTF8&iwloc=&output=embed" class="w-full h-full grayscale contrast-125"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 py-10 text-center text-zinc-500 text-sm">
+    © 2026 焼肉 凪
+  </footer>
+
+  <div class="fixed bottom-5 left-5 right-5 md:left-auto md:right-5 md:w-auto z-50 grid grid-cols-2 md:flex gap-3">
+    <a href="https://line.me/R/ti/p/@your-line-id" target="_blank" class="bg-green-500 text-black px-5 py-4 rounded-full shadow-2xl font-bold hover:scale-105 transition text-center">LINE予約</a>
+    <a href="tel:0000000000" class="bg-white text-black px-5 py-4 rounded-full shadow-2xl font-bold hover:scale-105 transition text-center">電話予約</a>
   </div>
-</div>
-    <script>
-// 名前衝突を避けるためにIIFEでスコープを閉じる
-(() => {
-  // DOMが揃ってから実行
-  document.addEventListener('DOMContentLoaded', () => {
 
-    // ===== データ =====
-    const famData = [
-      {
-        img: 'assets/cast-1.jpg',
-        name: 'ちゃま',
-        content: 'YouTube配信（ゲーム/雑談）',
-        time: '毎週 金曜 21:00-',
-        message: 'この物語の主人公は俺らだからよ─',
-        url: 'https://example.com/chama',
-        audio: 'assets/voice-chama.mp3'
-      },
-      // ここに追加
+  <script>
+    const menuItems = [
+      { name:'極上タン塩', enName:'PREMIUM TONGUE', desc:'厚切りなのに柔らかい。小さな店の看板にふさわしい、旨味が立つ一皿。', price:'¥1,980', allergy:'なし', image:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1400&auto=format&fit=crop' },
+      { name:'特選ハラミ', enName:'SELECTED HARAMI', desc:'赤身の旨味と柔らかさを両立。肉本来の味を楽しめる人気部位。', price:'¥2,480', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=1400&auto=format&fit=crop' },
+      { name:'黒毛和牛カルビ', enName:'WAGYU KALBI', desc:'脂の甘みと香ばしさが重なる、王道の一皿。', price:'¥1,780', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1559847844-d721426d6edc?q=80&w=1400&auto=format&fit=crop' },
+      { name:'炙り肉寿司', enName:'SEARED BEEF SUSHI', desc:'とろける和牛を香ばしく炙って。最初の一皿にも締めにも。', price:'¥1,280', allergy:'小麦・大豆', image:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400&auto=format&fit=crop' },
+      { name:'赤身三種盛り', enName:'LEAN BEEF TRIO', desc:'旨味の違いを食べ比べる、通好みの盛り合わせ。', price:'¥2,980', allergy:'なし', image:'https://images.unsplash.com/photo-1625938145744-e38051539956?q=80&w=1400&auto=format&fit=crop' },
+      { name:'和牛ロース', enName:'WAGYU LOIN', desc:'きめ細かな肉質と上品な香り。軽やかに食べられる贅沢。', price:'¥1,680', allergy:'なし', image:'https://images.unsplash.com/photo-1625943553852-781c6dd46faa?q=80&w=1400&auto=format&fit=crop' },
+      { name:'ホルモン盛り', enName:'OFFAL ASSORTMENT', desc:'鮮度で勝負する、焼肉に合う逸品。噛むほどに旨い。', price:'¥1,280', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=1400&auto=format&fit=crop' },
+      { name:'上レバー', enName:'PREMIUM LIVER', desc:'角が立つほど新鮮。濃厚でなめらかな味わい。', price:'¥1,180', allergy:'ごま', image:'https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=1400&auto=format&fit=crop' },
+      { name:'石焼ビビンバ', enName:'STONE BIBIMBAP', desc:'香ばしいおこげまで楽しめる締めの定番。', price:'¥1,180', allergy:'卵・大豆', image:'https://images.unsplash.com/photo-1553163147-622ab57be1c7?q=80&w=1400&auto=format&fit=crop' },
+      { name:'冷麺', enName:'COLD NOODLES', desc:'焼肉の余韻をすっきり整える、最後の一杯。', price:'¥980', allergy:'小麦・卵', image:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1400&auto=format&fit=crop' }
     ];
-    const unpub1Data = [];
-    const unpub2Data = [];
 
-    // ===== UI生成 =====
-    function makeCard(data) {
-      const {img, name} = data;
-      const article = document.createElement('article');
-      article.className = 'card';
-      article.innerHTML = `
-        <div class="ph"><img src="${img || 'assets/comingsoon.jpg'}" alt="${name || 'Coming Soon'}"></div>
-        <div class="bd"><strong>${name || 'Coming Soon'}</strong><div class="meta">${data.meta || ''}</div></div>
-      `;
-      article.addEventListener('click', () => openCastModal(data));
-      return article;
+    const enMenuItems = [
+      { name:'Premium Tongue', desc:'Thick cut, tender texture and deep umami. A true house signature.', allergy:'None' },
+      { name:'Selected Harami', desc:'A beloved cut with rich beef flavor and a tender bite.', allergy:'Soy / Sesame' },
+      { name:'Wagyu Kalbi', desc:'Sweet fat and smoky aroma in perfect balance.', allergy:'Soy / Sesame' },
+      { name:'Seared Beef Sushi', desc:'Tender wagyu, lightly seared to finish. Perfect as a first bite or finale.', allergy:'Wheat / Soy' },
+      { name:'Lean Beef Trio', desc:'A tasting plate designed for true beef lovers.', allergy:'None' },
+      { name:'Wagyu Loin', desc:'Fine texture, elegant aroma and a clean finish.', allergy:'None' },
+      { name:'Offal Assortment', desc:'Fresh, smoky and perfect for charcoal grilling.', allergy:'Soy / Sesame' },
+      { name:'Premium Liver', desc:'Fresh, rich and silky smooth.', allergy:'Sesame' },
+      { name:'Stone Bibimbap', desc:'A classic finish with crispy rice.', allergy:'Egg / Soy' },
+      { name:'Cold Noodles', desc:'A refreshing final bowl after yakiniku.', allergy:'Wheat / Egg' }
+    ];
+
+    let activeIndex = 0;
+    let lang = 'ja';
+
+    function currentItems() {
+      return menuItems.map((item, i) => ({ ...item, ...(lang === 'en' ? enMenuItems[i] : {}) }));
     }
 
-    function fillGrid(gridId, data, targetCount, metaLabel) {
-      const grid = document.getElementById(gridId);
-      if (!grid) return;
-      grid.innerHTML = '';
-      data.slice(0, targetCount).forEach(item => grid.appendChild(makeCard(item)));
-      for (let i = data.length; i < targetCount; i++) {
-        grid.appendChild(makeCard({
-          img: 'assets/comingsoon.jpg',
-          name: 'Coming Soon',
-          meta: metaLabel,
-          content:'', time:'', message:'', url:'', audio:''
-        }));
-      }
-    }
+    function setMainMenu(index) {
+      activeIndex = index;
+      const item = currentItems()[index];
+      document.getElementById('mainMenuImage').src = item.image;
+      document.getElementById('mainMenuImage').alt = item.name;
+      document.getElementById('mainMenuNumber').textContent = `SIGNATURE ${String(index + 1).padStart(2, '0')}`;
+      document.getElementById('mainMenuEn').textContent = item.enName;
+      document.getElementById('mainMenuName').textContent = item.name;
+      document.getElementById('mainMenuDesc').textContent = item.desc;
+      document.getElementById('mainMenuPrice').textContent = item.price;
 
-    // 初期描画
-    fillGrid('fam-grid',   famData,   12, 'ChamaFamiglia');
-    fillGrid('unpub1-grid',unpub1Data, 8, '未公開');
-    fillGrid('unpub2-grid',unpub2Data,10, '未公開');
-
-    // タブ切替
-    document.querySelectorAll('.tab-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        document.querySelectorAll('.cast-panel').forEach(p=>p.classList.remove('active'));
-        document.getElementById(tab).classList.add('active');
+      document.querySelectorAll('.thumb-btn').forEach((btn, i) => {
+        btn.classList.toggle('active-thumb', i === index);
       });
-    });
-
-    // ===== モーダル制御 =====
-    const modal   = document.getElementById('cast-modal');
-    const mImg    = document.getElementById('m-img');
-    const mName   = document.getElementById('m-name');
-    const mCont   = document.getElementById('m-content');
-    const mTime   = document.getElementById('m-time');
-    const mMsg    = document.getElementById('m-message');
-    const mLink   = document.getElementById('m-link');
-    const mAudio  = document.getElementById('m-audio');
-    const mBtnAud = document.getElementById('m-audio-btn');
-
-    function openCastModal(data){
-      mImg.src = data.img || 'assets/comingsoon.jpg';
-      mImg.alt = data.name || '';
-      mName.textContent = data.name || 'Coming Soon';
-      mCont.textContent = data.content ? `配信内容：${data.content}` : '';
-      mTime.textContent = data.time ? `配信時間：${data.time}` : '';
-      mMsg.textContent  = data.message || '';
-
-      if (data.url) {
-        mLink.href = data.url;
-        mLink.classList.remove('btn--disabled');
-        mLink.setAttribute('aria-disabled','false');
-      } else {
-        mLink.href = '#';
-        mLink.classList.add('btn--disabled');
-        mLink.setAttribute('aria-disabled','true');
-      }
-
-      mAudio.pause();
-      mAudio.src = '';
-      mBtnAud.textContent = '音声再生';
-      if (data.audio) {
-        mAudio.src = data.audio;
-        mBtnAud.disabled = false;
-        mBtnAud.classList.remove('btn--disabled');
-      } else {
-        mBtnAud.disabled = true;
-        mBtnAud.classList.add('btn--disabled');
-      }
-
-      modal.classList.add('is-open');
-      modal.setAttribute('aria-hidden','false');
     }
 
-    function closeCastModal(){
-      mAudio.pause();
-      modal.classList.remove('is-open');
-      modal.setAttribute('aria-hidden','true');
+    function renderMenus() {
+      const items = currentItems();
+      const thumbList = document.getElementById('thumbList');
+      thumbList.innerHTML = items.slice(0, 5).map((item, index) => `
+        <button class="thumb-btn group relative overflow-hidden text-left rounded-3xl border border-white/10 bg-black/70 text-white hover:border-white/50 transition h-28" onclick="setMainMenu(${index})">
+          <img src="${item.image}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition duration-700">
+          <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+          <div class="relative z-10 p-5">
+            <p class="text-xs tracking-[0.35em] mb-1 text-zinc-400">${String(index + 1).padStart(2, '0')}</p>
+            <p class="text-lg font-bold line-clamp-1">${item.name}</p>
+          </div>
+        </button>
+      `).join('');
+
+      const cards = [...items, ...items].map((item, index) => `
+        <button class="menu-card w-72 md:w-96 h-72 md:h-80 rounded-[2rem] overflow-hidden border border-white/10 bg-black shrink-0 group text-left relative" onclick="setMainMenu(${index % items.length})">
+          <img src="${item.image}" alt="${item.name}" class="absolute inset-0 w-full h-full object-cover transition duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <p class="text-xs text-zinc-400 tracking-[0.35em] mb-2">SPECIALTY</p>
+            <p class="text-2xl font-black">${item.name}</p>
+          </div>
+        </button>
+      `).join('');
+
+      const reverseCards = [...items].reverse().concat([...items].reverse()).map((item) => `
+        <button class="menu-card w-64 md:w-80 h-56 md:h-64 rounded-[2rem] overflow-hidden border border-white/10 bg-black shrink-0 group text-left relative opacity-80 hover:opacity-100 transition" onclick="setMainMenu(${items.findIndex(m => m.enName === item.enName)})">
+          <img src="${item.image}" alt="${item.name}" class="absolute inset-0 w-full h-full object-cover transition duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-xl font-bold">${item.name}</p>
+          </div>
+        </button>
+      `).join('');
+
+      document.getElementById('marquee1').innerHTML = cards;
+      document.getElementById('marquee2').innerHTML = reverseCards;
+
+      document.getElementById('priceList').innerHTML = items.map((item) => `
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <span class="text-zinc-200">${item.name}</span>
+          <span class="font-bold">${item.price}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('allergyTable').innerHTML = items.map((item) => `
+        <tr class="border-t border-white/10 bg-zinc-950 hover:bg-white/5 transition">
+          <td class="p-6">${item.name}</td>
+          <td class="p-6 text-zinc-400">${item.allergy}</td>
+        </tr>
+      `).join('');
+
+      setMainMenu(activeIndex);
     }
 
-    modal.addEventListener('click', (e)=>{
-      if (e.target.matches('[data-close], .modal__backdrop')) closeCastModal();
-    });
-    document.addEventListener('keydown', (e)=>{
-      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeCastModal();
-    });
-    mBtnAud.addEventListener('click', ()=>{
-      if (!mAudio.src) return;
-      if (mAudio.paused) {
-        mAudio.play().then(()=>{ mBtnAud.textContent = '停止'; }).catch(()=>{});
-      } else {
-        mAudio.pause();
-        mBtnAud.textContent = '音声再生';
-      }
-    });
+    function renderReserveDays() {
+      const days = lang === 'ja'
+        ? [['5/10','空席あり','◎'], ['5/11','残り2席','△'], ['5/12','満席','×'], ['5/13','空席あり','◎'], ['5/14','空席あり','◎'], ['5/15','残り1席','△']]
+        : [['5/10','Available','◎'], ['5/11','2 seats left','△'], ['5/12','Full','×'], ['5/13','Available','◎'], ['5/14','Available','◎'], ['5/15','1 seat left','△']];
+      document.getElementById('reserveDays').innerHTML = days.map(day => `
+        <div class="fade-up bg-zinc-950 border border-white/10 rounded-2xl py-8 hover:border-white/30 transition group">
+          <p class="text-zinc-500 mb-2">${day[0]}</p>
+          <p class="text-3xl font-black mb-2 group-hover:scale-110 transition">${day[2]}</p>
+          <p class="text-lg font-semibold">${day[1]}</p>
+        </div>
+      `).join('');
+    }
 
-  }); // DOMContentLoaded
-})();
-</script>
+    function switchLang() {
+      lang = lang === 'ja' ? 'en' : 'ja';
+      document.getElementById('langBtn').textContent = lang === 'ja' ? 'EN' : 'JP';
+      document.querySelectorAll('[data-ja][data-en]').forEach(el => {
+        const text = el.getAttribute(`data-${lang}`) || '';
+        el.textContent = text;
+      });
+      renderMenus();
+      renderReserveDays();
+      observeFade();
+    }
+
+    function observeFade() {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('show');
+        });
+      }, { threshold: .14 });
+      document.querySelectorAll('.fade-up, .fade-left, .fade-right').forEach(el => observer.observe(el));
+    }
+
+    document.getElementById('langBtn').addEventListener('click', switchLang);
+
+    renderMenus();
+    renderReserveDays();
+    observeFade();
+
+    setInterval(() => {
+      setMainMenu((activeIndex + 1) % menuItems.length);
+    }, 4200);
+
+    const TEST_CASES = [
+      { name:'menu has 10 items', passed: menuItems.length === 10 },
+      { name:'every menu has image price allergy', passed: menuItems.every(i => i.image && i.price && i.allergy) },
+      { name:'reserve days section exists', passed: !!document.getElementById('reserveDays') }
+    ];
+    console.table(TEST_CASES);
+  </script>
 </body>
 </html>
