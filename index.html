@@ -326,7 +326,6 @@
 
   </div>
 </section>
-  </section>
 
   <section id="access" class="py-28 px-6 border-t border-white/10">
     <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
@@ -422,7 +421,7 @@
     name:'焼きしゃぶ', 
     enName:'BAKED SHABU', 
     desc:'とろける食感', 
-    price:'¥1480,（税込¥1,480）', 
+    price:'¥1,480（税込¥1,628）',
     allergy:'なし',
     image:'https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=1400&auto=format&fit=crop'
   },
@@ -443,13 +442,142 @@
     image:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1400&auto=format&fit=crop'
   }
 ];
-
+const menuGroups = [
+  { title:'タン', items:[
+    ['特上厚切りタン','¥1,680（¥1,848）'],
+    ['特上タン','¥1,580（¥1,738）'],
+    ['特選ねぎ塩タン','¥1,180（¥1,298）'],
+    ['塩タン','¥1,080（¥1,188）'],
+    ['胡麻にんにくタン','¥880（¥968）'],
+  ]},
+  { title:'ハラミ・サガリ', items:[
+    ['特選ハラミ','¥1,980（¥2,178）'],
+    ['特選サガリ','¥1,980（¥2,178）'],
+    ['上ハラミ','¥1,480（¥1,628）'],
+    ['ハラミ','¥1,080（¥1,188）'],
+  ]},
+  { title:'カルビ', items:[
+    ['特選カルビ','¥1,480（¥1,628）'],
+    ['にんにくレモンカルビ','¥980（¥1,078）'],
+    ['上カルビ','¥980（¥1,078）'],
+    ['バラ中落ち','¥880（¥968）'],
+  ]},
+  { title:'ロース・赤身', items:[
+    ['特選ロース','¥1,480（¥1,628）'],
+    ['上赤身','¥1,380（¥1,518）'],
+    ['上ロース','¥980（¥1,078）'],
+    ['赤身切り落とし','¥880（¥968）'],
+  ]},
+  { title:'焼きしゃぶ', items:[
+    ['凪の焼きしゃぶ','¥1,480（¥1,628）'],
+    ['サーロイン焼きしゃぶ','¥980（¥1,078）'],
+  ]},
+  { title:'盛り合わせ', items:[
+    ['風厳選盛り','¥3,980（¥4,378）'],
+    ['和牛3種盛り','¥2,480（¥2,728）'],
+    ['ホルモン3種盛り','¥1,080（¥1,188）'],
+  ]},
+  { title:'ホルモン', items:[
+    ['上ホルモン','¥980（¥968）'],
+    ['テッチャン','¥780（¥858）'],
+    ['ツラミ','¥780（¥858）'],
+  ]},
+  { title:'480円ホルモン', items:[
+    ['プリプリ白ホルモン','¥480（¥528）'],
+    ['あかせん','¥480（¥528）'],
+    ['コリコリ','¥480（¥528）'],
+    ['レバー','¥480（¥528）'],
+  ]},
+  { title:'レバー焼き', items:[
+    ['特選厚切りレバー焼き','¥1,080（¥1,188）'],
+    ['新鮮薄切りレバー焼き','¥780（¥858）'],
+  ]},
+  { title:'風名物・鉄板逸品', items:[
+    ['風名物 鉄板青椒肉絲','¥1,480（¥1,628）'],
+  ]},
+  { title:'お寿司・巻き物', items:[
+    ['和牛炙り寿司（2貫）','¥540（¥594）'],
+    ['追加1貫','¥270（¥297）'],
+    ['和牛トロタク細巻き','¥780（¥858）'],
+  ]},
+  { title:'キムチ', items:[
+    ['キムチ3種盛り','¥680（¥748）'],
+    ['山芋キムチ','¥480（¥528）'],
+    ['白菜キムチ','¥380（¥418）'],
+    ['大根キムチ','¥380（¥418）'],
+    ['胡瓜キムチ','¥380（¥418）'],
+  ]},
+  { title:'刺し・生物', items:[
+    ['生ハラミユッケ','¥1,480（¥1,628）'],
+    ['炙りユッケ','¥880（¥968）'],
+    ['山かけハート刺し','¥680（¥748）'],
+    ['生センマイ','¥680（¥748）'],
+  ]},
+  { title:'一品焼き・サイド焼き', items:[
+    ['テールスライス','¥780（¥858）'],
+    ['豚トロ','¥480（¥528）'],
+    ['鶏もも','¥480（¥528）'],
+    ['せせり','¥480（¥528）'],
+    ['焼きニンニク','¥380（¥418）'],
+    ['ウインナー','¥380（¥418）'],
+    ['焼き野菜','¥300（¥330）'],
+  ]},
+  { title:'ナムル', items:[
+    ['ナムル盛り合わせ','¥680（¥748）'],
+    ['ほうれん草','¥380（¥418）'],
+    ['豆もやし','¥380（¥418）'],
+    ['大根ナマス','¥380（¥418）'],
+  ]},
+  { title:'凪名物・冷麺', items:[
+    ['青唐辛子冷麺','¥980（¥1,078）'],
+    ['とろろあおさ冷麺','¥980（¥1,078）'],
+    ['盛岡冷麺','¥780（¥858）'],
+  ]},
+  { title:'サラダ・チシャ', items:[
+    ['大根サラダ','¥580（¥638）'],
+    ['チョレギサラダ','¥580（¥638）'],
+    ['チシャ菜','¥300（¥330）'],
+  ]},
+  { title:'スープ', items:[
+    ['ユッケジャン','¥680（¥748）'],
+    ['テールスープ','¥680（¥748）'],
+    ['わかたま','¥480（¥528）'],
+    ['たまご','¥380（¥418）'],
+    ['わかめ','¥380（¥418）'],
+  ]},
+  { title:'ご飯物・丼', items:[
+    ['ガーリックバターライス','¥1,280（¥1,408）'],
+    ['石焼しゃけ明太バタービビンバ','¥1,380（¥1,518）'],
+    ['石焼ユッケビビンバ','¥1,280（¥1,408）'],
+    ['石焼チーズビビンバ','¥1,080（¥1,188）'],
+    ['石焼ビビンバ','¥980（¥1,078）'],
+    ['出汁茶漬け（わさび／しそ／しゃけ）','¥680〜¥780（¥748〜¥858）'],
+    ['ご飯 小','¥300（¥330）'],
+    ['ご飯 中','¥350（¥385）'],
+    ['ご飯 大','¥400（¥440）'],
+  ]},
+  { title:'薬味・逸品', items:[
+    ['特製 青唐酢ダレ','¥150（¥165）'],
+    ['梅塩ダレ','¥150（¥165）'],
+    ['鬼おろしポン酢','¥150（¥165）'],
+    ['たまごダレ','¥150（¥165）'],
+    ['胡麻塩昆布','¥100（¥110）'],
+    ['柚子胡椒','無料'],
+    ['わさび','無料'],
+    ['韓国のり','¥200（¥220）'],
+  ]},
+  { title:'デザート', items:[
+    ['濃厚ミルク','¥360（¥396）'],
+    ['ピスタチオ','¥360（¥396）'],
+    ['チョコ','¥320（¥352）'],
+  ]},
+];
     let activeIndex = 0;
     let lang = 'ja';
 
-    function currentItems() {
-      return menuItems.map((item, i) => ({ ...item, ...(lang === 'en' ? enMenuItems[i] : {}) }));
-    }
+   function currentItems() {
+  return menuItems;
+}
 
     function setMainMenu(index) {
       activeIndex = index;
@@ -470,6 +598,7 @@
     function renderMenus() {
       const items = currentItems();
       const thumbList = document.getElementById('thumbList');
+
       thumbList.innerHTML = items.slice(0, 5).map((item, index) => `
         <button class="thumb-btn group relative overflow-hidden text-left rounded-3xl border border-white/10 bg-black/70 text-white hover:border-white/50 transition h-28" onclick="setMainMenu(${index})">
           <img src="${item.image}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition duration-700">
@@ -505,10 +634,22 @@
       document.getElementById('marquee1').innerHTML = cards;
       document.getElementById('marquee2').innerHTML = reverseCards;
 
-      document.getElementById('priceList').innerHTML = items.map((item) => `
-        <div class="flex items-center justify-between border-b border-white/10 pb-4">
-          <span class="text-zinc-200">${item.name}</span>
-          <span class="font-bold">${item.price}</span>
+      document.getElementById('priceList').innerHTML = menuGroups.map(group => `
+        <div class="pt-8 first:pt-0">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="w-2 h-2 rounded-full bg-red-700"></span>
+            <h5 class="text-lg md:text-2xl font-black tracking-wide">${group.title}</h5>
+            <span class="flex-1 h-px bg-white/10"></span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-x-10">
+            ${group.items.map(([name, price]) => `
+              <div class="flex items-start justify-between gap-5 border-b border-white/10 py-4">
+                <span class="text-zinc-100 text-sm md:text-base leading-relaxed">${name}</span>
+                <span class="text-white font-bold text-sm md:text-base whitespace-nowrap">${price}</span>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `).join('');
 
