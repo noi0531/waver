@@ -137,7 +137,7 @@
   </p>
 
  <h2
-  class="hero-title text-[34px] leading-[1.25] md:text-7xl md:leading-tight font-black mb-6 md:mb-8 px-2"
+  class="hero-title text-[28px] sm:text-[30px] leading-[1.3] md:text-7xl md:leading-tight font-black mb-6 md:mb-8 px-4"
   data-ja="焼肉を極める。一切の妥協なし。"
   data-en="Serious yakiniku. No compromise."
 >
@@ -361,31 +361,88 @@
   </div>
 
   <script>
-    const menuItems = [
-      { name:'極上タン塩', enName:'PREMIUM TONGUE', desc:'厚切りなのに柔らかい。小さな店の看板にふさわしい、旨味が立つ一皿。', price:'¥1,980', allergy:'なし', image:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1400&auto=format&fit=crop' },
-      { name:'特選ハラミ', enName:'SELECTED HARAMI', desc:'赤身の旨味と柔らかさを両立。肉本来の味を楽しめる人気部位。', price:'¥2,480', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=1400&auto=format&fit=crop' },
-      { name:'黒毛和牛カルビ', enName:'WAGYU KALBI', desc:'脂の甘みと香ばしさが重なる、王道の一皿。', price:'¥1,780', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1559847844-d721426d6edc?q=80&w=1400&auto=format&fit=crop' },
-      { name:'炙り肉寿司', enName:'SEARED BEEF SUSHI', desc:'とろける和牛を香ばしく炙って。最初の一皿にも締めにも。', price:'¥1,280', allergy:'小麦・大豆', image:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1400&auto=format&fit=crop' },
-      { name:'赤身三種盛り', enName:'LEAN BEEF TRIO', desc:'旨味の違いを食べ比べる、通好みの盛り合わせ。', price:'¥2,980', allergy:'なし', image:'https://images.unsplash.com/photo-1625938145744-e38051539956?q=80&w=1400&auto=format&fit=crop' },
-      { name:'和牛ロース', enName:'WAGYU LOIN', desc:'きめ細かな肉質と上品な香り。軽やかに食べられる贅沢。', price:'¥1,680', allergy:'なし', image:'https://images.unsplash.com/photo-1625943553852-781c6dd46faa?q=80&w=1400&auto=format&fit=crop' },
-      { name:'ホルモン盛り', enName:'OFFAL ASSORTMENT', desc:'鮮度で勝負する、焼肉に合う逸品。噛むほどに旨い。', price:'¥1,280', allergy:'大豆・ごま', image:'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=1400&auto=format&fit=crop' },
-      { name:'上レバー', enName:'PREMIUM LIVER', desc:'角が立つほど新鮮。濃厚でなめらかな味わい。', price:'¥1,180', allergy:'ごま', image:'https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=1400&auto=format&fit=crop' },
-      { name:'石焼ビビンバ', enName:'STONE BIBIMBAP', desc:'香ばしいおこげまで楽しめる締めの定番。', price:'¥1,180', allergy:'卵・大豆', image:'https://images.unsplash.com/photo-1553163147-622ab57be1c7?q=80&w=1400&auto=format&fit=crop' },
-      { name:'冷麺', enName:'COLD NOODLES', desc:'焼肉の余韻をすっきり整える、最後の一杯。', price:'¥980', allergy:'小麦・卵', image:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1400&auto=format&fit=crop' }
-    ];
-
-    const enMenuItems = [
-      { name:'Premium Tongue', desc:'Thick cut, tender texture and deep umami. A true house signature.', allergy:'None' },
-      { name:'Selected Harami', desc:'A beloved cut with rich beef flavor and a tender bite.', allergy:'Soy / Sesame' },
-      { name:'Wagyu Kalbi', desc:'Sweet fat and smoky aroma in perfect balance.', allergy:'Soy / Sesame' },
-      { name:'Seared Beef Sushi', desc:'Tender wagyu, lightly seared to finish. Perfect as a first bite or finale.', allergy:'Wheat / Soy' },
-      { name:'Lean Beef Trio', desc:'A tasting plate designed for true beef lovers.', allergy:'None' },
-      { name:'Wagyu Loin', desc:'Fine texture, elegant aroma and a clean finish.', allergy:'None' },
-      { name:'Offal Assortment', desc:'Fresh, smoky and perfect for charcoal grilling.', allergy:'Soy / Sesame' },
-      { name:'Premium Liver', desc:'Fresh, rich and silky smooth.', allergy:'Sesame' },
-      { name:'Stone Bibimbap', desc:'A classic finish with crispy rice.', allergy:'Egg / Soy' },
-      { name:'Cold Noodles', desc:'A refreshing final bowl after yakiniku.', allergy:'Wheat / Egg' }
-    ];
+  const menuItems = [
+  {
+    name:'特上厚切りタン',
+    enName:'PREMIUM THICK TONGUE',
+    desc:'人気No.1の名物タン。',
+    price:'¥1,680（税込¥1,848）',
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'特選ハラミ', 
+    enName:'PREMIUM HARAMI', 
+    desc:'柔らかさと旨味を両立。',
+    price:'¥1,980（税込¥2,178）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'特製カルビ', 
+    enName:'PREMIUM KARUBI', 
+    desc:'極上の脂。', 
+    price:'¥1,480（税込¥1,628）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'特選厚切りレバー焼き', 
+    enName:'PREMIUM LIVER', 
+    desc:'内蔵の王様', 
+    price:'¥1,080（税込¥1,188）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1559847844-d721426d6edc?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'和牛炙り寿司(2貫)', 
+    enName:'NIKU SUSHI', 
+    desc:'ガッツリ旨味', 
+    price:'¥540（税込¥594）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1625938145744-e38051539956?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'生ハラミユッケ', 
+    enName:'RAW SKIRT', 
+    desc:'贅沢な生肉の一皿', 
+    price:'¥1,480（税込¥1,628）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1625943553852-781c6dd46faa?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'石焼ユッケビビンバ', 
+    enName:'BIBIMBAP', 
+    desc:'アツアツの本格派', 
+    price:'¥1,280（税込¥1,408）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'焼きしゃぶ', 
+    enName:'BAKED SHABU', 
+    desc:'とろける食感', 
+    price:'¥1480,（税込¥1,480）', 
+    allergy:'なし',
+    image:'https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'鉄板青椒肉絲', 
+    enName:'BEEF & PEPPERS',
+    desc:'凪名物─。', 
+    price:'¥680（税込¥748）',
+    allergy:'なし', 
+    image:'https://images.unsplash.com/photo-1553163147-622ab57be1c7?q=80&w=1400&auto=format&fit=crop'
+  },
+  {
+    name:'青唐辛子冷麺',
+    enName:'GREEN CHILI COLD NOODLES',
+    desc:'凪名物の辛旨冷麺。',
+    price:'¥980（税込¥1,078）',
+    allergy:'小麦・卵',
+    image:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1400&auto=format&fit=crop'
+  }
+];
 
     let activeIndex = 0;
     let lang = 'ja';
